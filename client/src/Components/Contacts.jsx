@@ -23,6 +23,18 @@ const Contacts = () => {
       time: "9.36",
       last: "jvfkibvvliveyvulibvryuewbvlivuivlbreuirbruivbreibvru",
     },
+    {
+      img: "https://docs.material-tailwind.com/img/face-2.jpg",
+      name: "Pink Panda",
+      time: "9.36",
+      last: "jvfkibvvliveyvulibvryuewbvlivuivlbreuirbruivbreibvru",
+    },
+    {
+      img: "https://docs.material-tailwind.com/img/face-2.jpg",
+      name: "Pink Panda",
+      time: "9.36",
+      last: "jvfkibvvliveyvulibvryuewbvlivuivlbreuirbruivbreibvru",
+    },
   ];
   return (
     <div
@@ -55,11 +67,17 @@ const Contacts = () => {
           }`}
         />
       </label>
-      <div className="h-[70vh] overflow-scroll overflow-x-hidden mt-7 flex flex-col gap-3">
+      <div
+        className={`h-[70vh] ${
+          data.length > 5 ? "overflow-scroll" : ""
+        }  overflow-x-hidden mt-7 flex flex-col gap-1`}
+      >
         {data.map((item, index) => (
           <div
             key={index}
-            className="flex border border-[#4c4d52] py-4 px-2 rounded-xl mr-2 justify-between items-start cursor-pointer"
+            className={`flex py-4 px-2 rounded-xl mr-2 justify-between items-start cursor-pointer ${
+              theme ? "hover:bg-[#4c4d52]" : "hover:bg-[#f6f6f7]"
+            }`}
           >
             <div className="flex gap-3">
               <Avatar src={item.img} alt="" />

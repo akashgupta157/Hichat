@@ -4,6 +4,7 @@ import { useLocation, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleTheme } from "../Redux/Theme/action";
 import { Avatar } from "@material-tailwind/react";
+import logo from "../assets/logo.png";
 const Menu = () => {
   const theme = useSelector((state) => state.theme.isDarkMode);
   const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth > 768);
@@ -40,11 +41,7 @@ const Menu = () => {
             }`}
           >
             <div className="flex flex-col items-center gap-6">
-              <img
-                src="https://circularall.com/wp-content/uploads/2023/03/Best-Database-for-Chat-Applications.png"
-                alt=""
-                className="w-14"
-              />
+              <img src={logo} alt="" className="w-10" />
               <Link to={"/chats"}>
                 {path == "/chats" ? (
                   <MessageCircle style={{ ...style, color: "white" }} />
