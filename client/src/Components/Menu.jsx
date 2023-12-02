@@ -27,14 +27,16 @@ const Menu = () => {
     width: "35px",
     height: "35px",
     padding: "5px",
+    backgroundColor: theme ? "#010100" : "#c6c7c9",
+    color: theme ? "white" : "black",
   };
   return (
     <>
       {isLargeScreen ? (
         <>
           <div
-            className={`w-20 h-[100vh] flex flex-col justify-between py-5 ${
-              theme ? "bg-[#01497C]" : "bg-[#F0F4FA]"
+            className={`w-[6vw] h-[100vh] flex flex-col justify-between py-5 ${
+              theme ? "bg-[#1f1f23]" : "bg-[#f6f6f7]"
             }`}
           >
             <div className="flex flex-col items-center gap-6">
@@ -45,24 +47,28 @@ const Menu = () => {
               />
               <Link to={"/chats"}>
                 {path == "/chats" ? (
-                  <MessageCircle
-                    style={{
-                      ...style,
-                      backgroundColor: "#61A5C2",
-                      color: "white",
-                    }}
-                  />
+                  <MessageCircle style={{ ...style, color: "white" }} />
                 ) : (
                   <MessageCircle
                     style={{
                       ...style,
                       backgroundColor: "transparent",
-                      color: "black",
                     }}
                   />
                 )}
               </Link>
-              <Phone style={{ style }} />
+              <Link to={"/calls"}>
+                {path == "/calls" ? (
+                  <Phone style={{ ...style, color: "white" }} />
+                ) : (
+                  <Phone
+                    style={{
+                      ...style,
+                      backgroundColor: "transparent",
+                    }}
+                  />
+                )}
+              </Link>
             </div>
             <div className="flex flex-col items-center gap-6">
               <button
@@ -87,19 +93,12 @@ const Menu = () => {
               </button>
               <Link to={"/setting"}>
                 {path == "/setting" ? (
-                  <Settings
-                    style={{
-                      ...style,
-                      backgroundColor: "#61A5C2",
-                      color: "white",
-                    }}
-                  />
+                  <Settings style={{ ...style, color: "white" }} />
                 ) : (
                   <Settings
                     style={{
                       ...style,
                       backgroundColor: "transparent",
-                      color: "black",
                     }}
                   />
                 )}
