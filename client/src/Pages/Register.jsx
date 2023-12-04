@@ -1,5 +1,13 @@
-import { Button } from "@material-tailwind/react";
-import { AtSign, AlertCircle, LockKeyhole, Loader2, User } from "lucide-react";
+import { Button, IconButton } from "@material-tailwind/react";
+import {
+  AtSign,
+  AlertCircle,
+  LockKeyhole,
+  Loader2,
+  User,
+  Eye,
+  EyeOff,
+} from "lucide-react";
 import { useForm } from "react-hook-form";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -10,6 +18,10 @@ import { toast } from "react-toastify";
 import { useGoogleLogin } from "@react-oauth/google";
 const Register = () => {
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
   const navigate = useNavigate();
   const {
     register,
@@ -79,8 +91,8 @@ const Register = () => {
           </p>
           <hr className="w-full h-[3px] bg-gray-400 border dark:bg-gray-700" />
         </div>
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
-          <div className="flex flex-col gap-2">
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
+          <div className="flex flex-col gap-2 mb-3">
             <fieldset className="flex flex-col gap-2">
               <label className="font-semibold" htmlFor="email">
                 Name:
@@ -114,7 +126,7 @@ const Register = () => {
               </p>
             )}
           </div>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 mb-3">
             <fieldset className="flex flex-col gap-2">
               <label className="font-semibold" htmlFor="email">
                 Email:
@@ -144,17 +156,23 @@ const Register = () => {
               </p>
             )}
           </div>
-          <div className="flex flex-col gap-1">
-            <fieldset className="flex flex-col gap-2">
-              <label className="font-semibold" htmlFor="password">
-                Password:
+          <div className="flex flex-col gap-1 mb-5">
+            <fieldset className="flex flex-col">
+              <label
+                className="font-semibold flex justify-between items-center"
+                htmlFor="password"
+              >
+                <p>Password:</p>
+                <IconButton variant="text" onClick={togglePasswordVisibility}>
+                  {showPassword ? <Eye /> : <EyeOff />}
+                </IconButton>
               </label>
               <div className="flex items-center gap-1 border rounded-md px-2 py-3 pl-5 transition duration-300 ease-in-out focus-within:border-black focus-within:border-2 focus-within:text-[#0d0c22] border-gray-400 text-gray-600">
                 <input
                   autoCapitalize="off"
                   autoCorrect="off"
                   className="outline-0 w-full text-[#0d0c22]"
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   id="password"
                   {...register("password", {
                     required: "Password is required",
