@@ -3,7 +3,7 @@ const initialState = {
   isAuthenticated: user ? true : false,
   user: user ? JSON.parse(user) : [],
 };
-export const authReducer = (state = initialState, action) => {
+const authReducer = (state = initialState, action) => {
   switch (action.type) {
     case "LOGIN":
       return {
@@ -21,3 +21,4 @@ export const authReducer = (state = initialState, action) => {
       return state;
   }
 };
+export default authReducer;

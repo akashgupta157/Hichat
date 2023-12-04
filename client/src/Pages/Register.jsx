@@ -8,6 +8,7 @@ import {
   Eye,
   EyeOff,
 } from "lucide-react";
+import { useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -16,7 +17,9 @@ import axios from "axios";
 import { url } from "../Components/url";
 import { toast } from "react-toastify";
 import { useGoogleLogin } from "@react-oauth/google";
+import { login } from "../Redux/Auth/action";
 const Register = () => {
+  const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const togglePasswordVisibility = () => {
@@ -65,10 +68,12 @@ const Register = () => {
     const { data } = await axios.post(`${url}/auth/google/login`, {
       googleAccessToken: accessToken,
     });
+    dispatch(login({ ...data.user, token: data.token }));
     sessionStorage.setItem(
       "user",
       JSON.stringify({ ...data.user, token: data.token })
     );
+    navigate("/chats");
   }
   return (
     <>

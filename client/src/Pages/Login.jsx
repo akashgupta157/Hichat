@@ -9,15 +9,19 @@ import {
 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import googleLogo from "../assets/google-logo.png";
 import axios from "axios";
 import { url } from "../Components/url";
 import { toast } from "react-toastify";
 import { useGoogleLogin } from "@react-oauth/google";
+import { useDispatch } from "react-redux";
+import { login } from "../Redux/Auth/action";
 export default function Login() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -44,6 +48,10 @@ export default function Login() {
         "user",
         JSON.stringify({ ...data.user, token: data.token })
       );
+      dispatch(login({ ...data.user, token: data.token }));
+      setTimeout(() => {
+        navigate("/chats");
+      }, 2000);
     } else {
       toast.error(`${data.message}`, {
         position: "top-right",
@@ -64,10 +72,14 @@ export default function Login() {
     const { data } = await axios.post(`${url}/auth/google/login`, {
       googleAccessToken: accessToken,
     });
+    dispatch(login({ ...data.user, token: data.token }));
     sessionStorage.setItem(
       "user",
       JSON.stringify({ ...data.user, token: data.token })
     );
+    setTimeout(() => {
+      navigate("/chats");
+    }, 2000);
   }
   return (
     <>
