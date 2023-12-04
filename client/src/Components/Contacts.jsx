@@ -34,12 +34,12 @@ const Contacts = () => {
       name: "Pink Panda",
       time: "9.36",
       last: "jvfkibvvliveyvulibvryuewbvlivuivlbreuirbruivbreibvru",
-    },
+    }
   ];
   return (
     <div
-      className={`w-[28vw] h-[97vh] rounded-md py-8 px-5 ${
-        theme ? "bg-[#2b2c30]" : "bg-white"
+      className={`w-[28vw] h-[97vh] rounded-xl py-8 px-5 ${
+        theme ? "bg-[#131312]" : "bg-white"
       }`}
     >
       <div
@@ -47,24 +47,22 @@ const Contacts = () => {
           theme ? "text-white" : "text-black"
         }`}
       >
-        <h1 className="text-4xl font-bold">Chats</h1>
+        <h1 className="text-3xl font-semibold">Chats</h1>
         <Bell />
       </div>
       <label
         htmlFor="search"
         className={`flex items-center gap-2 ${
-          theme ? "bg-[#69696b] text-white" : "bg-[#f6f6f7] text-[#4c4d52]"
+          theme ? "bg-[#252425] text-white" : "bg-[#f6f6f7] text-[#4c4d52]"
         }
-           text-base px-2 py-1 rounded-lg mt-5 font-semibold`}
+           text-base p-2 rounded-lg mt-5 font-semibold`}
       >
         <Search strokeWidth={2} />
         <input
           type="text"
           id="search"
           placeholder="Search"
-          className={`w-full bg-transparent outline-none ${
-            theme ? "placeholder:text-white" : "placeholder:text-[#4c4d52]"
-          }`}
+          className="last:w-full bg-transparent outline-none"
         />
       </label>
       <div
@@ -75,9 +73,9 @@ const Contacts = () => {
         {data.map((item, index) => (
           <div
             key={index}
-            className={`flex py-4 px-2 rounded-xl mr-2 justify-between items-start cursor-pointer ${
-              theme ? "hover:bg-[#4c4d52]" : "hover:bg-[#f6f6f7]"
-            }`}
+            className={`flex py-4 px-2 rounded-xl  justify-between items-start cursor-pointer ${
+              data.length > 5 ? "mr-2" : ""
+            } ${theme ? "hover:bg-[#4c4d52]" : "hover:bg-[#f6f6f7]"}`}
           >
             <div className="flex gap-3">
               <Avatar src={item.img} alt="" />
@@ -90,7 +88,7 @@ const Contacts = () => {
                   {item.name}
                 </h2>
                 <p
-                  className={`font-semibold text-sm	${
+                  className={`font-medium text-sm	${
                     theme ? "text-white" : "text-[#7C7C7D]"
                   }`}
                 >

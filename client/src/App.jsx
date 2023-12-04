@@ -3,6 +3,7 @@ import { Routes, Route, useLocation } from "react-router-dom";
 import Chat from "./Pages/Chat";
 import Menu from "./Components/Menu";
 import Setting from "./Pages/Setting";
+import Login from "./Pages/Login";
 export default function App() {
   const { pathname } = useLocation();
   return (
@@ -11,6 +12,7 @@ export default function App() {
       <Routes>
         <Route path="/chats" element={<Chat />} />
         <Route path="/setting" element={<Setting />} />
+        <Route path="/" element={<Login />} />
       </Routes>
     </div>
   );

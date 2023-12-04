@@ -8,7 +8,7 @@ const Chat = () => {
     <>
       <div
         className={`flex py-[1.5vh] pr-[.8vw] gap-[.8vw] ${
-          theme ? "bg-[#1f1f23]" : "bg-[#f6f6f7]"
+          theme ? "bg-[#010001]" : "bg-[#f6f6f7]"
         }`}
       >
         <Contacts />

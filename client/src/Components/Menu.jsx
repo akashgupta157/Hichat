@@ -28,7 +28,7 @@ const Menu = () => {
     width: "35px",
     height: "35px",
     padding: "5px",
-    backgroundColor: theme ? "#010100" : "#c6c7c9",
+    backgroundColor: theme ? "#232222" : "#c6c7c9",
     color: theme ? "white" : "black",
   };
   return (
@@ -37,7 +37,7 @@ const Menu = () => {
         <>
           <div
             className={`w-[6vw] h-[100vh] flex flex-col justify-between py-5 ${
-              theme ? "bg-[#1f1f23]" : "bg-[#f6f6f7]"
+              theme ? "bg-[#010001]" : "bg-[#f6f6f7]"
             }`}
           >
             <div className="flex flex-col items-center gap-6">
@@ -102,8 +102,11 @@ const Menu = () => {
               </Link>
               <Avatar
                 src="https://docs.material-tailwind.com/img/face-2.jpg"
-                size="sm"
+                size="md"
                 alt="avatar"
+                withBorder={true}
+                className="p-0.5"
+                color={`${theme ? "white" : "black"}`}
               />
             </div>
           </div>
