@@ -1,15 +1,16 @@
 import { Button } from "@material-tailwind/react";
-import { AtSign, AlertCircle, LockKeyhole, Loader2 } from "lucide-react";
+import { AtSign, AlertCircle, LockKeyhole, Loader2, User } from "lucide-react";
 import { useForm } from "react-hook-form";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import googleLogo from "../assets/google-logo.png";
 import axios from "axios";
 import { url } from "../Components/url";
 import { toast } from "react-toastify";
 import { useGoogleLogin } from "@react-oauth/google";
-export default function Login() {
+const Register = () => {
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -17,9 +18,9 @@ export default function Login() {
   } = useForm();
   const onSubmit = async (Data) => {
     setLoading(true);
-    const { data } = await axios.post(`${url}/auth/login`, Data);
+    const { data } = await axios.post(`${url}/auth/register`, Data);
     if (data.auth) {
-      toast.success("Sign in successful", {
+      toast.success("Sign up successful", {
         position: "top-right",
         autoClose: 2000,
         hideProgressBar: false,
@@ -29,10 +30,9 @@ export default function Login() {
         progress: undefined,
         theme: "colored",
       });
-      sessionStorage.setItem(
-        "user",
-        JSON.stringify({ ...data.user, token: data.token })
-      );
+      setTimeout(() => {
+        navigate("/");
+      }, 2000);
     } else {
       toast.error(`${data.message}`, {
         position: "top-right",
@@ -60,8 +60,8 @@ export default function Login() {
   }
   return (
     <>
-      <div className="text-[#0d0c22] m-auto w-full px-5 mt-14 md:w-[400px] md:shadow-xl md:py-5 md:rounded md:mt-10">
-        <h1 className="text-2xl	font-bold	mb-[40px]">Sign in to Hichat</h1>
+      <div className="text-[#0d0c22] m-auto w-full px-5 mt-10 md:w-[400px] md:shadow-xl md:py-5 md:rounded md:mt-5">
+        <h1 className="text-2xl	font-bold	mb-[30px]">Sign up to Hichat</h1>
         <Button
           variant="outlined"
           className="flex justify-center items-center gap-4 rounded-full w-full border-gray-400 py-[16px]"
@@ -69,17 +69,51 @@ export default function Login() {
         >
           <img src={googleLogo} alt="" className="w-[16px]" />
           <p className="text-sm font-semibold capitalize">
-            Sign in with Google
+            Sign up with Google
           </p>
         </Button>
         <div className="flex justify-center items-center w-full my-5">
           <hr className="w-full h-[3px] bg-gray-400 border dark:bg-gray-700" />
           <p className="w-[500px] text-center text-gray-500 text-sm">
-            or sign in with email
+            or sign up with email
           </p>
           <hr className="w-full h-[3px] bg-gray-400 border dark:bg-gray-700" />
         </div>
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-8">
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
+          <div className="flex flex-col gap-2">
+            <fieldset className="flex flex-col gap-2">
+              <label className="font-semibold" htmlFor="email">
+                Name:
+              </label>
+              <div className="flex items-center gap-1 border rounded-md px-2 py-3 pl-5 transition duration-300 ease-in-out focus-within:border-black focus-within:border-2 focus-within:text-[#0d0c22] border-gray-400 text-gray-600">
+                <input
+                  autoCapitalize="off"
+                  autoCorrect="off"
+                  className="outline-0 w-full text-[#0d0c22]"
+                  type="text"
+                  id="email"
+                  {...register("name", {
+                    required: "Name is required",
+                    minLength: {
+                      value: 2,
+                      message: "Name should be at least 2 characters",
+                    },
+                    maxLength: {
+                      value: 50,
+                      message: "Name should not exceed 50 characters",
+                    },
+                  })}
+                />
+                <User />
+              </div>
+            </fieldset>
+            {errors.name && (
+              <p className="flex gap-2 items-center text-red-700 font-medium">
+                <AlertCircle />
+                {errors.name.message}
+              </p>
+            )}
+          </div>
           <div className="flex flex-col gap-2">
             <fieldset className="flex flex-col gap-2">
               <label className="font-semibold" htmlFor="email">
@@ -158,12 +192,14 @@ export default function Login() {
           )}
         </form>
         <p className="w-full text-right mt-4 text-sm text-gray-600">
-          Don't have an account?{" "}
-          <Link className="underline" to={"/register"}>
-            Sign up
+          Already have an account?{" "}
+          <Link className="underline" to={"/"}>
+            Sign in
           </Link>
         </p>
       </div>
     </>
   );
-}
+};
+
+export default Register;
