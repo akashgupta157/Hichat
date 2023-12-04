@@ -77,7 +77,7 @@ const Register = () => {
   }
   return (
     <>
-      <div className="text-[#0d0c22] m-auto w-full px-5 mt-10 md:w-[400px] md:shadow-xl md:py-5 md:rounded md:mt-5">
+      <div className="text-[#0d0c22] m-auto w-full px-5 mt-10 sm:w-[400px] sm:shadow-xl sm:py-5 sm:rounded sm:mt-5">
         <h1 className="text-2xl	font-bold	mb-[30px]">Sign up to Hichat</h1>
         <Button
           variant="outlined"

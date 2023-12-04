@@ -83,7 +83,7 @@ export default function Login() {
   }
   return (
     <>
-      <div className="text-[#0d0c22] m-auto w-full px-5 mt-14 md:w-[400px] md:shadow-xl md:py-5 md:rounded md:mt-10">
+      <div className="text-[#0d0c22] m-auto w-full px-5 mt-14 sm:w-[400px] sm:shadow-xl sm:py-5 sm:rounded sm:mt-10">
         <h1 className="text-2xl	font-bold	mb-[40px]">Sign in to Hichat</h1>
         <Button
           variant="outlined"
