@@ -4,6 +4,7 @@ const bcrypt = require("bcrypt");
 const userModel = require("../models/user.model");
 const jwt = require("jsonwebtoken");
 const axios = require("axios");
+const userMiddleware = require("../middlewares/user.middleware");
 router.get("/", async (req, res) => {
   try {
     res.send("Welcome User");
@@ -21,9 +22,11 @@ router.post("/google/login", async (req, res) => {
       },
     }
   );
-  let existingUser = await userModel.findOne({
-    email: data.email,
-  });
+  let existingUser = await userModel
+    .findOne({
+      email: data.email,
+    })
+    .select("-password");
   if (existingUser) {
     const token = jwt.sign(
       { userId: existingUser._id, user: existingUser.email },
@@ -98,5 +101,23 @@ router.post("/login", async (req, res) => {
   } catch (error) {
     res.json({ message: error.message });
   }
+});
+router.get("/search", userMiddleware, async (req, res) => {
+  const search = req.query.search
+    ? {
+        $or: [
+          { name: { $regex: req.query.search, $options: "i" } },
+          { email: { $regex: req.query.search, $options: "i" } },
+        ],
+      }
+    : {};
+  res.send(
+    await userModel
+      .find(search)
+      .find({
+        _id: { $ne: req.user.userId },
+      })
+      .select("-password")
+  );
 });
 module.exports = router;

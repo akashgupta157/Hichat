@@ -8,15 +8,16 @@ import {
   EyeOff,
 } from "lucide-react";
 import { useForm } from "react-hook-form";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import googleLogo from "../assets/google-logo.png";
 import axios from "axios";
-import { url } from "../Components/url";
+import { url } from "../Components/misc";
 import { toast } from "react-toastify";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useDispatch } from "react-redux";
 import { login } from "../Redux/Auth/action";
+import { setPageLoad } from "../Redux/PageLoad/action";
 export default function Login() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -68,6 +69,7 @@ export default function Login() {
   };
   const handleGoogle = useGoogleLogin({ onSuccess: handleGoogleLoginSuccess });
   async function handleGoogleLoginSuccess(tokenResponse) {
+    dispatch(setPageLoad(true));
     const accessToken = tokenResponse.access_token;
     const { data } = await axios.post(`${url}/auth/google/login`, {
       googleAccessToken: accessToken,
@@ -77,9 +79,8 @@ export default function Login() {
       "user",
       JSON.stringify({ ...data.user, token: data.token })
     );
-    setTimeout(() => {
-      navigate("/chats");
-    }, 2000);
+    dispatch(setPageLoad(false));
+    navigate("/chats");
   }
   return (
     <>

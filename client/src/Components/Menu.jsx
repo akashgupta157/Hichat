@@ -7,6 +7,7 @@ import { Avatar } from "@material-tailwind/react";
 import logo from "../assets/logo.png";
 const Menu = () => {
   const theme = useSelector((state) => state.theme.isDarkMode);
+  const user = useSelector((state) => state.auth.user);
   const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth > 768);
   useEffect(() => {
     const handleResize = () => {
@@ -101,7 +102,7 @@ const Menu = () => {
                 )}
               </Link>
               <Avatar
-                src="https://docs.material-tailwind.com/img/face-2.jpg"
+                src={user?.profilePicture}
                 size="md"
                 alt="avatar"
                 withBorder={true}
