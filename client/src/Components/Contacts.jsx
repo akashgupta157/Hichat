@@ -138,29 +138,34 @@ const Contacts = () => {
         </div>
       </>
       {/* searchInput */}
-      <div
-        className={`h-[70vh] ${
-          chatList.length > 5 ? "overflow-scroll" : ""
-        }  overflow-x-hidden mt-7 flex flex-col gap-1`}
-      >
-        {chatList?.map((item, index) => {
-          var chatName = "";
-          if (item.isGroupChat) {
-            chatName = item.chatName;
-          } else {
-            item.members.map((i) => {
-              if (i._id != you._id) {
-                chatName = i;
-              }
-            });
-          }
-          if (item.latestMessage === undefined) {
-            return (
-              <div
-                key={index}
-                className={`flex p-3 rounded-xl  justify-between items-start cursor-pointer ${
-                  chatList.length > 5 ? "mr-2" : ""
-                } ${theme ? "hover:bg-[#4c4d52]" : "hover:bg-[#d6d6d7]"}
+      {listLoading ? (
+        <div className="flex justify-center items-center h-[70vh]">
+          <Loader2 size="50px" className="m-auto animate-spin" />
+        </div>
+      ) : (
+        <div
+          className={`h-[70vh] ${
+            chatList.length > 5 ? "overflow-scroll" : ""
+          }  overflow-x-hidden mt-7 flex flex-col gap-1`}
+        >
+          {chatList?.map((item, index) => {
+            var chatName = "";
+            if (item.isGroupChat) {
+              chatName = item.chatName;
+            } else {
+              item.members.map((i) => {
+                if (i._id != you._id) {
+                  chatName = i;
+                }
+              });
+            }
+            if (item.latestMessage === undefined) {
+              return (
+                <div
+                  key={index}
+                  className={`flex p-3 rounded-xl  justify-between items-start cursor-pointer ${
+                    chatList.length > 5 ? "mr-2" : ""
+                  } ${theme ? "hover:bg-[#4c4d52]" : "hover:bg-[#d6d6d7]"}
                 ${
                   selectChat.isChatSelected &&
                   selectChat.data.detail._id == chatName._id
@@ -169,38 +174,38 @@ const Contacts = () => {
                       : "bg-gray-500 hover:bg-gray-500"
                     : null
                 }`}
-                onClick={() => {
-                  dispatch(selectedChat({ id: item._id, detail: chatName }));
-                }}
-              >
-                <div className="flex gap-3">
-                  <Avatar src={chatName.profilePicture} alt="" />
-                  <div>
-                    <h2
-                      className={`font-bold text-base	${
-                        theme ? "text-white" : "text-black"
-                      }`}
-                    >
-                      {chatName.name}
-                    </h2>
-                    <p
-                      className={`text-sm	${
-                        theme ? "text-white" : "text-black"
-                      }`}
-                    >
-                      No previous Messages
-                    </p>
+                  onClick={() => {
+                    dispatch(selectedChat({ id: item._id, detail: chatName }));
+                  }}
+                >
+                  <div className="flex gap-3">
+                    <Avatar src={chatName.profilePicture} alt="" />
+                    <div>
+                      <h2
+                        className={`font-bold text-base	${
+                          theme ? "text-white" : "text-black"
+                        }`}
+                      >
+                        {chatName.name}
+                      </h2>
+                      <p
+                        className={`text-sm	${
+                          theme ? "text-white" : "text-black"
+                        }`}
+                      >
+                        No previous Messages
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            );
-          } else {
-            return (
-              <div
-                key={index}
-                className={`flex p-3 rounded-xl  justify-between items-start cursor-pointer ${
-                  chatList.length > 5 ? "mr-2" : ""
-                } ${theme ? "hover:bg-[#4c4d52]" : "hover:bg-[#d6d6d7]"}
+              );
+            } else {
+              return (
+                <div
+                  key={index}
+                  className={`flex p-3 rounded-xl  justify-between items-start cursor-pointer ${
+                    chatList.length > 5 ? "mr-2" : ""
+                  } ${theme ? "hover:bg-[#4c4d52]" : "hover:bg-[#d6d6d7]"}
               ${
                 selectChat.isChatSelected &&
                 selectChat.data.detail._id == chatName._id
@@ -209,34 +214,35 @@ const Contacts = () => {
                     : "bg-gray-500 hover:bg-gray-500"
                   : null
               }`}
-                onClick={() => {
-                  dispatch(selectedChat({ id: item._id, detail: chatName }));
-                }}
-              >
-                <div className="flex gap-3">
-                  <Avatar src={chatName.profilePicture} alt="" />
-                  <div>
-                    <h2
-                      className={`font-bold text-base	${
-                        theme ? "text-white" : "text-black"
-                      }`}
-                    >
-                      {chatName.name}
-                    </h2>
-                    <p
-                      className={`text-sm	${
-                        theme ? "text-white" : "text-black"
-                      }`}
-                    >
-                      {chatName.latestMessage.content}
-                    </p>
+                  onClick={() => {
+                    dispatch(selectedChat({ id: item._id, detail: chatName }));
+                  }}
+                >
+                  <div className="flex gap-3">
+                    <Avatar src={chatName.profilePicture} alt="" />
+                    <div>
+                      <h2
+                        className={`font-bold text-base	${
+                          theme ? "text-white" : "text-black"
+                        }`}
+                      >
+                        {chatName.name}
+                      </h2>
+                      <p
+                        className={`text-sm	${
+                          theme ? "text-white" : "text-black"
+                        }`}
+                      >
+                        {chatName.latestMessage.content}
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            );
-          }
-        })}
-      </div>
+              );
+            }
+          })}
+        </div>
+      )}
     </div>
   );
 };

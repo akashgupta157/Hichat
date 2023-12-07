@@ -4,6 +4,7 @@ import Messages from "../Components/Messages";
 import { useDispatch, useSelector } from "react-redux";
 const Chat = () => {
   const theme = useSelector((state) => state.theme.isDarkMode);
+  const selectChat = useSelector((state) => state.selectChat);
   return (
     <>
       <div

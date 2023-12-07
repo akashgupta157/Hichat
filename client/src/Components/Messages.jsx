@@ -16,6 +16,7 @@ import {
   Send,
   X,
 } from "lucide-react";
+import logo from "../assets/logo.png";
 const Messages = () => {
   const theme = useSelector((state) => state.theme.isDarkMode);
   const selectChat = useSelector((state) => state.selectChat);
@@ -106,8 +107,18 @@ const Messages = () => {
           </footer>
         </>
       ) : (
-        <>
-        </>
+        <div className="flex justify-center items-center h-full">
+          <section>
+            <img src={logo} alt="" className="w-48 block m-auto" />
+            <h1
+              className={`mt-5 font-semibold text-4xl ${
+                theme ? "text-white" : "text-black"
+              }`}
+            >
+              Welcome to Hichat
+            </h1>
+          </section>
+        </div>
       )}
     </div>
   );
