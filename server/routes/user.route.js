@@ -107,7 +107,12 @@ router.get("/search", userMiddleware, async (req, res) => {
     ? {
         $or: [
           { name: { $regex: req.query.search, $options: "i" } },
-          { email: { $regex: req.query.search, $options: "i" } },
+          {
+            email: {
+              $regex: `^${req.query.search.split("@")[0]}`,
+              $options: "i",
+            },
+          },
         ],
       }
     : {};

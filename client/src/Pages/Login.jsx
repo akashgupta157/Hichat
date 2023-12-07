@@ -19,6 +19,13 @@ import { useDispatch } from "react-redux";
 import { login } from "../Redux/Auth/action";
 import { setPageLoad } from "../Redux/PageLoad/action";
 export default function Login() {
+  useEffect(() => {
+    async function fetchData() {
+      const { data } = await axios.get(`${url}/auth`);
+      console.log(data);
+    }
+    fetchData();
+  }, []);
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const dispatch = useDispatch();

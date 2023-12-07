@@ -2,25 +2,15 @@ const express = require("express");
 const app = express();
 const connection = require("./db");
 const cors = require("cors");
+const userMiddleware = require("./middlewares/user.middleware");
 const userRoute = require("./routes/user.route");
-// const http = require("http");
-// const { Server } = require("socket.io");
+const chatRoute = require("./routes/chats.route");
+const messageRoute = require("./routes/messages.route");
 app.use(express.json());
 app.use(cors());
 app.use("/auth", userRoute);
-// const server = http.createServer(app);
-// const io = new Server(server, {
-//   cors: {
-//     origin: "*",
-//     methods: ["GET", "POST"],
-//   },
-// });
-// io.on("connection", (socket) => {
-//   console.log("a user connected", socket);
-// });
-// server.listen(3001, () => {
-//   console.log("socket listening on 3001");
-// });
+app.use("/chat", userMiddleware, chatRoute);
+app.use("/message", userMiddleware, messageRoute);
 app.listen(3000, async () => {
   try {
     await connection;

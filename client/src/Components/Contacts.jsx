@@ -35,39 +35,6 @@ const Contacts = () => {
     }, 500);
     return () => clearTimeout(debounceTimer);
   }, [search]);
-  console.log(searchResults);
-  let data = [
-    {
-      img: "https://docs.material-tailwind.com/img/face-2.jpg",
-      name: "Pink Panda",
-      time: "9.36",
-      last: "jvfkibvvliveyvulibvryuewbvlivuivlbreuirbruivbreibvru",
-    },
-    {
-      img: "https://docs.material-tailwind.com/img/face-2.jpg",
-      name: "Pink Panda",
-      time: "9.36",
-      last: "jvfkibvvliveyvulibvryuewbvlivuivlbreuirbruivbreibvru",
-    },
-    {
-      img: "https://docs.material-tailwind.com/img/face-2.jpg",
-      name: "Pink Panda",
-      time: "9.36",
-      last: "jvfkibvvliveyvulibvryuewbvlivuivlbreuirbruivbreibvru",
-    },
-    {
-      img: "https://docs.material-tailwind.com/img/face-2.jpg",
-      name: "Pink Panda",
-      time: "9.36",
-      last: "jvfkibvvliveyvulibvryuewbvlivuivlbreuirbruivbreibvru",
-    },
-    {
-      img: "https://docs.material-tailwind.com/img/face-2.jpg",
-      name: "Pink Panda",
-      time: "9.36",
-      last: "jvfkibvvliveyvulibvryuewbvlivuivlbreuirbruivbreibvru",
-    },
-  ];
   return (
     <div
       className={`w-[28vw] h-[97vh] rounded-xl py-8 px-5 ${
@@ -140,7 +107,7 @@ const Contacts = () => {
           </div>
         ) : null}
       </div>
-      <div
+      {/* <div
         className={`h-[70vh] ${
           data.length > 5 ? "overflow-scroll" : ""
         }  overflow-x-hidden mt-7 flex flex-col gap-1`}
@@ -181,7 +148,7 @@ const Contacts = () => {
             </p>
           </div>
         ))}
-      </div>
+      </div> */}
     </div>
   );
 };
