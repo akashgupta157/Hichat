@@ -105,7 +105,6 @@ const Menu = () => {
                 src={user?.profilePicture}
                 size="md"
                 alt="avatar"
-                withBorder={true}
                 className="p-0.5"
                 color={`${theme ? "white" : "black"}`}
               />

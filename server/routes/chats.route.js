@@ -1,7 +1,7 @@
 const chatModel = require("../models/chat.model");
 const userModel = require("../models/user.model");
-
 const router = require("express").Router();
+//accessChat
 router.post("/", async (req, res) => {
   const { userId } = req.body;
   if (!userId) {
@@ -27,22 +27,22 @@ router.post("/", async (req, res) => {
     var chatData = {
       chatName: "sender",
       isGroupChat: false,
-      user: [req.user.userId, userId],
+      members: [req.user.userId, userId],
     };
     try {
       const createdChat = await chatModel.create(chatData);
-      const FullChat = await chatModel
+      const wholeChat = await chatModel
         .findOne({
           _id: createdChat._id,
         })
         .populate("members", "-password");
-      res.json(FullChat);
+      res.json(wholeChat).send(wholeChat);
     } catch (err) {
       console.log(err);
     }
   }
 });
-
+//fetchChat
 router.get("/", async (req, res) => {
   try {
     chatModel
@@ -59,7 +59,7 @@ router.get("/", async (req, res) => {
         res.send(result);
       });
   } catch (error) {
-    res.status(404).send("Error: " + error.message);
+    res.send("Error: " + error.message);
   }
 });
 router.post("/group", async (req, res) => {});

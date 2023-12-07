@@ -44,7 +44,7 @@ export default function Login() {
     if (data.auth) {
       toast.success("Sign in successful", {
         position: "top-right",
-        autoClose: 2000,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
@@ -59,7 +59,7 @@ export default function Login() {
       dispatch(login({ ...data.user, token: data.token }));
       setTimeout(() => {
         navigate("/chats");
-      }, 2000);
+      }, 1000);
     } else {
       toast.error(`${data.message}`, {
         position: "top-right",
@@ -77,17 +77,31 @@ export default function Login() {
   const handleGoogle = useGoogleLogin({ onSuccess: handleGoogleLoginSuccess });
   async function handleGoogleLoginSuccess(tokenResponse) {
     dispatch(setPageLoad(true));
-    const accessToken = tokenResponse.access_token;
-    const { data } = await axios.post(`${url}/auth/google/login`, {
-      googleAccessToken: accessToken,
-    });
-    dispatch(login({ ...data.user, token: data.token }));
-    sessionStorage.setItem(
-      "user",
-      JSON.stringify({ ...data.user, token: data.token })
-    );
-    dispatch(setPageLoad(false));
-    navigate("/chats");
+    try {
+      const accessToken = tokenResponse.access_token;
+      const { data } = await axios.post(`${url}/auth/google/login`, {
+        googleAccessToken: accessToken,
+      });
+      dispatch(login({ ...data.user, token: data.token }));
+      sessionStorage.setItem(
+        "user",
+        JSON.stringify({ ...data.user, token: data.token })
+      );
+      dispatch(setPageLoad(false));
+      navigate("/chats");
+    } catch (error) {
+      dispatch(setPageLoad(false));
+      toast.error(`${error.message}`, {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    }
   }
   return (
     <>
