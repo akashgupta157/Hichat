@@ -52,8 +52,9 @@ const Contacts = () => {
   }, []);
 
   async function addChatList(userId) {
-    // const { data } = await axios.post(`${url}/chat`, { userId }, config);
-    // setChatList([data, ...chatList]);
+    const { data } = await axios.post(`${url}/chat`, { userId }, config);
+    setChatList([data, ...chatList]);
+    setSearch("");
   }
   return (
     <div
@@ -143,7 +144,10 @@ const Contacts = () => {
       {/* searchInput */}
       {listLoading ? (
         <div className="flex justify-center items-center h-[70vh]">
-          <Loader2 size="50px" className="m-auto animate-spin" />
+          <Loader2
+            size="50px"
+            className={`${theme ? "text-white" : ""} m-auto animate-spin`}
+          />
         </div>
       ) : (
         <div

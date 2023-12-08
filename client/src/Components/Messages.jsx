@@ -4,7 +4,7 @@ import {
   Drawer,
   Typography,
 } from "@material-tailwind/react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Phone,
@@ -15,6 +15,7 @@ import {
   Send,
   X,
   ArrowLeft,
+  Loader2,
 } from "lucide-react";
 import logo from "../assets/logo.png";
 import { notSelectedChat } from "../Redux/SelectedChat/action";
@@ -31,7 +32,16 @@ const Messages = () => {
   const closeDrawerRight = () => setOpenRight(false);
   const [messageInput, setMessageInput] = useState("");
   const [allMessages, setAllMessages] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const messagesContainerRef = useRef(null);
+  useEffect(() => {
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTop =
+        messagesContainerRef.current.scrollHeight;
+    }
+  }, [allMessages, selectChat]);
   const sendMsg = () => {
+    //send msg
     if (messageInput.length > 0) {
       axios.post(
         `${url}/message`,
@@ -44,13 +54,30 @@ const Messages = () => {
     }
   };
   useEffect(() => {
-    if (selectChat.isChatSelected) {
-      axios.get(`${url}/message/${selectChat.data.id}`, config).then((res) => {
-        console.log(res.data);
-        setAllMessages(res.data);
-      });
-    }
-  });
+    //fetch All Messages
+    (async function () {
+      if (selectChat.isChatSelected) {
+        setLoading(true);
+        const { data } = await axios.get(
+          `${url}/message/${selectChat.data.id}`,
+          config
+        );
+        setAllMessages(data);
+        setLoading(false);
+      }
+    })();
+  }, [selectChat]);
+  function formatTime(timestamp) {
+    const date = new Date(timestamp);
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    const period = hours >= 12 ? "PM" : "AM";
+    const formattedHours = hours % 12 || 12;
+    const formattedTime = `${formattedHours}:${
+      minutes < 10 ? "0" : ""
+    }${minutes} ${period}`;
+    return formattedTime;
+  }
   return (
     <div
       className={`w-full md:w-[64.4vw] h-[97vh] flex flex-col rounded-xl ${
@@ -59,6 +86,7 @@ const Messages = () => {
     >
       {selectChat.isChatSelected ? (
         <>
+          {/* navbar */}
           <nav
             className={`flex justify-between items-center px-3 md:px-7 py-2 shadow-md ${
               theme ? "text-white shadow-gray-900" : "text-black"
@@ -109,29 +137,63 @@ const Messages = () => {
               <hr className="my-3" />
             </Drawer>
           </nav>
-          <div className="h-[75vh] md:h-[80vh]">
-            {allMessages
-              .slice(0)
-              .reverse()
-              .map((msg, i) => {
-                const sender = msg.sender;
-                if (sender._id === you._id) {
-                  return (
-                    <>
-                      <h1 key={i}>{msg.content}</h1>
-                    </>
-                  );
-                } else {
-                  return (
-                    <>
-                      <h1 className="text-red-500" key={i}>
-                        {msg.content}
-                      </h1>
-                    </>
-                  );
-                }
-              })}
+          {/* navbar */}
+          {/* messagesArea */}
+          <div
+            ref={messagesContainerRef}
+            className="h-[75vh] md:h-[80vh] overflow-scroll overflow-x-hidden scrollbar-none"
+          >
+            {loading ? (
+              <div className="h-full flex items-center">
+                <Loader2
+                  size="70px"
+                  className={`${theme ? "text-white" : ""} m-auto animate-spin`}
+                />
+              </div>
+            ) : (
+              <>
+                {allMessages
+                  .slice(0)
+                  // .reverse()
+                  .map((msg, i) => {
+                    const sender = msg.sender;
+                    if (sender._id === you._id) {
+                      return (
+                        <div className="flex justify-end p-2">
+                          <section
+                            className={`rounded ${
+                              theme ? "bg-[#0171b6] text-white" : "bg-[#0eb6fa]"
+                            }  py-1 px-3`}
+                          >
+                            <h1 key={i}>{msg.content}</h1>
+                            <b className={`flex justify-end text-xs `}>
+                              {formatTime(msg.createdAt)}
+                            </b>
+                          </section>
+                        </div>
+                      );
+                    } else {
+                      return (
+                        <div className="p-2">
+                          <section
+                            className={`rounded w-fit py-1 px-3 ${
+                              theme ? "bg-[#212121] text-white" : "bg-[#d6d6d7]"
+                            } `}
+                          >
+                            <h1 key={i}>{msg.content}</h1>
+                            <b className="flex justify-end text-xs">
+                              {formatTime(msg.createdAt)}
+                            </b>
+                          </section>
+                        </div>
+                      );
+                    }
+                  })}
+              </>
+            )}
           </div>
+          {/* messagesArea */}
+          {/* input box for send message */}
           <footer
             className={`border-t h-[5vh] md:h-[10vh] md:flex items-center justify-center ${
               theme ? "border-gray-800" : "border-gray-300"
@@ -172,6 +234,7 @@ const Messages = () => {
               </IconButton>
             </div>
           </footer>
+          {/* input box for send message */}
         </>
       ) : (
         <div className="flex justify-center items-center h-full">
