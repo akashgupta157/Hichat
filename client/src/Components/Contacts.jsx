@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Bell, Search, Loader2 } from "lucide-react";
+import { Bell, Search, Loader2, MoreVertical } from "lucide-react";
 import { Avatar } from "@material-tailwind/react";
 import { configure, url } from "./misc";
 import axios from "axios";
@@ -10,7 +10,6 @@ const Contacts = () => {
   const you = useSelector((state) => state.auth.user);
   const selectChat = useSelector((state) => state.selectChat);
   const dispatch = useDispatch();
-  console.log(selectChat);
   const config = configure(you.token);
   const [search, setSearch] = useState();
   const [searchResults, setSearchResults] = useState([]);
@@ -53,12 +52,12 @@ const Contacts = () => {
   }, []);
 
   async function addChatList(userId) {
-    const { data } = await axios.post(`${url}/chat`, { userId }, config);
+    // const { data } = await axios.post(`${url}/chat`, { userId }, config);
     // setChatList([data, ...chatList]);
   }
   return (
     <div
-      className={`w-[28vw] h-[97vh] rounded-xl py-8 px-5 ${
+      className={`w-full md:w-[28vw] md:h-[97vh] rounded-xl py-5 px-4 md:py-8 md:px-5 ${
         theme ? "bg-[#131312]" : "bg-white"
       }`}
     >
@@ -68,7 +67,10 @@ const Contacts = () => {
         }`}
       >
         <h1 className="text-3xl font-semibold">Chats</h1>
-        <Bell />
+        <div className="flex items-center gap-1">
+          <Bell />
+          <MoreVertical className="md:hidden" />
+        </div>
       </div>
       {/* searchInput */}
       <>
@@ -89,6 +91,7 @@ const Contacts = () => {
             id="search"
             placeholder="Search"
             autoComplete="off"
+            value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="last:w-full bg-transparent outline-none"
           />

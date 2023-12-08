@@ -7,7 +7,6 @@ router.get("/:id", async (req, res) => {
     const msg = await messageModel
       .find({ chat: id })
       .populate("sender", "name profilePicture email")
-      .populate("reciever")
       .populate("chat");
     res.json(msg);
   } catch (error) {
@@ -23,9 +22,8 @@ router.post("/", async (req, res) => {
   };
   try {
     var message = await messageModel.create(newMsg);
-    message = await message.populate("sender", "name");
+    message = await message.populate("sender", "name profilePicture");
     message = await message.populate("chat");
-    message = await message.populate("receiver");
     message = await message.populate(message, {
       path: "chat.members",
       select: "name profilePicture email",
@@ -35,7 +33,7 @@ router.post("/", async (req, res) => {
     });
     res.json(message);
   } catch (error) {
-    res.status(404).send(error.message);
+    res.send(error.message);
   }
 });
 module.exports = router;

@@ -8,7 +8,7 @@ const chat = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "MessageModel",
     },
-    groupAdmin: [{ type: mongoose.Schema.Types.ObjectId, ref: "UserModel" }],
+    groupAdmin: { type: mongoose.Schema.Types.ObjectId, ref: "UserModel" },
   },
   {
     timestamps: true,

@@ -19,7 +19,7 @@ router.post("/", async (req, res) => {
     .populate("latestMessage");
   chat = await userModel.populate(chat, {
     path: "latestMessage.sender",
-    select: "name profilePicture  email",
+    select: "name profilePicture email",
   });
   if (chat.length > 0) {
     res.send(chat[0]);
@@ -36,7 +36,7 @@ router.post("/", async (req, res) => {
           _id: createdChat._id,
         })
         .populate("members", "-password");
-      res.json(wholeChat).send(wholeChat);
+      res.json(wholeChat);
     } catch (err) {
       console.log(err);
     }
