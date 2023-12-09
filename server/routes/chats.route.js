@@ -50,7 +50,7 @@ router.get("/", async (req, res) => {
       .populate("members", "-password")
       .populate("groupAdmin", "-password")
       .populate("latestMessage")
-      .sort({ updateAt: -1 })
+      .sort({ updatedAt: -1 })
       .then(async (result) => {
         result = await userModel.populate(result, {
           path: "latestMessage.sender",

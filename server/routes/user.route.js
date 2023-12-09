@@ -2,6 +2,7 @@ require("dotenv").config();
 const router = require("express").Router();
 const bcrypt = require("bcrypt");
 const userModel = require("../models/user.model");
+const chatModel = require("../models/chat.model");
 const jwt = require("jsonwebtoken");
 const axios = require("axios");
 const userMiddleware = require("../middlewares/user.middleware");

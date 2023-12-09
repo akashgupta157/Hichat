@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Bell, Search, Loader2, MoreVertical } from "lucide-react";
 import { Avatar } from "@material-tailwind/react";
-import { configure, url } from "./misc";
+import { configure, formatTime, url } from "./misc";
 import axios from "axios";
 import { selectedChat } from "../Redux/SelectedChat/action";
 const Contacts = () => {
@@ -16,7 +16,6 @@ const Contacts = () => {
   const [searchLoading, setSearchLoading] = useState(false);
   const [listLoading, setListLoading] = useState(true);
   const [chatList, setChatList] = useState([]);
-
   useEffect(() => {
     const fetchResults = async () => {
       try {
@@ -50,11 +49,20 @@ const Contacts = () => {
     };
     fetchList();
   }, []);
-
   async function addChatList(userId) {
-    const { data } = await axios.post(`${url}/chat`, { userId }, config);
-    setChatList([data, ...chatList]);
-    setSearch("");
+    let found = false;
+    for (const chat of chatList) {
+      if (chat.members.some((member) => member._id === userId)) {
+        found = true;
+      }
+    }
+    if (found === false) {
+      setSearch("");
+      const { data } = await axios.post(`${url}/chat`, { userId }, config);
+      setChatList([data, ...chatList]);
+    } else {
+      setSearch("");
+    }
   }
   return (
     <div
@@ -210,7 +218,7 @@ const Contacts = () => {
               return (
                 <div
                   key={index}
-                  className={`flex p-3 rounded-xl  justify-between items-start cursor-pointer ${
+                  className={`flex p-3 rounded-xl justify-between items-start cursor-pointer ${
                     chatList.length > 5 ? "mr-2" : ""
                   } ${theme ? "hover:bg-[#4c4d52]" : "hover:bg-[#d6d6d7]"}
               ${
@@ -240,10 +248,13 @@ const Contacts = () => {
                           theme ? "text-white" : "text-black"
                         }`}
                       >
-                        {chatName.latestMessage.content}
+                        {item.latestMessage.content}
                       </p>
                     </div>
                   </div>
+                  <small className={`${theme ? "text-white" : "text-black"}`}>
+                    {formatTime(item.updatedAt)}
+                  </small>
                 </div>
               );
             }

@@ -1,4 +1,4 @@
-const themeReducer = (state = { isDarkMode: false }, action) => {
+const themeReducer = (state = { isDarkMode: true }, action) => {
   switch (action.type) {
     case "TOGGLE_THEME":
       return {

@@ -1,5 +1,6 @@
 const chatModel = require("../models/chat.model");
 const messageModel = require("../models/message.model");
+const userModel = require("../models/user.model");
 const router = require("express").Router();
 router.get("/:id", async (req, res) => {
   try {
@@ -22,14 +23,14 @@ router.post("/", async (req, res) => {
   };
   try {
     var message = await messageModel.create(newMsg);
-    message = await message.populate("sender", "name profilePicture");
+    message = await message.populate("sender", "name profilePicture email");
     message = await message.populate("chat");
-    message = await message.populate(message, {
+    message = await userModel.populate(message, {
       path: "chat.members",
       select: "name profilePicture email",
     });
-    await chatModel.findByIdAndUpdate(req.body.chatId, {
-      latestMessage: message,
+    await chatModel.findByIdAndUpdate(chatId, {
+      latestMessage: message._id,
     });
     res.json(message);
   } catch (error) {

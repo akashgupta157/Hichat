@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 import logo from "../assets/logo.png";
 import { notSelectedChat } from "../Redux/SelectedChat/action";
-import { configure, url } from "./misc";
+import { configure, formatTime, url } from "./misc";
 import axios from "axios";
 const Messages = () => {
   const dispatch = useDispatch();
@@ -66,18 +66,19 @@ const Messages = () => {
         setLoading(false);
       }
     })();
-  }, [selectChat]);
-  function formatTime(timestamp) {
-    const date = new Date(timestamp);
-    const hours = date.getHours();
-    const minutes = date.getMinutes();
-    const period = hours >= 12 ? "PM" : "AM";
-    const formattedHours = hours % 12 || 12;
-    const formattedTime = `${formattedHours}:${
-      minutes < 10 ? "0" : ""
-    }${minutes} ${period}`;
-    return formattedTime;
-  }
+  }, [selectChat, messageInput]);
+  const groupMessagesByDate = (messages) => {
+    // segregate chats by date
+    const groupedMessages = {};
+    messages.forEach((msg) => {
+      const dateKey = new Date(msg.createdAt).toDateString();
+      if (!groupedMessages[dateKey]) {
+        groupedMessages[dateKey] = [];
+      }
+      groupedMessages[dateKey].push(msg);
+    });
+    return groupedMessages;
+  };
   return (
     <div
       className={`w-full md:w-[64.4vw] h-[97vh] flex flex-col rounded-xl ${
@@ -152,43 +153,57 @@ const Messages = () => {
               </div>
             ) : (
               <>
-                {allMessages
-                  .slice(0)
-                  // .reverse()
-                  .map((msg, i) => {
-                    const sender = msg.sender;
-                    if (sender._id === you._id) {
-                      return (
-                        <div className="flex justify-end p-2">
-                          <section
-                            className={`rounded ${
-                              theme ? "bg-[#0171b6] text-white" : "bg-[#0eb6fa]"
-                            }  py-1 px-3`}
-                          >
-                            <h1 key={i}>{msg.content}</h1>
-                            <b className={`flex justify-end text-xs `}>
-                              {formatTime(msg.createdAt)}
-                            </b>
-                          </section>
-                        </div>
-                      );
-                    } else {
-                      return (
-                        <div className="p-2">
-                          <section
-                            className={`rounded w-fit py-1 px-3 ${
-                              theme ? "bg-[#212121] text-white" : "bg-[#d6d6d7]"
-                            } `}
-                          >
-                            <h1 key={i}>{msg.content}</h1>
-                            <b className="flex justify-end text-xs">
-                              {formatTime(msg.createdAt)}
-                            </b>
-                          </section>
-                        </div>
-                      );
-                    }
-                  })}
+                {Object.entries(groupMessagesByDate(allMessages)).map(
+                  ([date, messages]) => (
+                    <div key={date}>
+                      <h2
+                        className={`text-center text-sm mb-2 ${
+                          theme ? "text-gray-300" : "text-gray-600"
+                        }`}
+                      >
+                        {date === new Date().toDateString() ? "Today" : date}
+                      </h2>
+                      {messages.map((msg, i) => {
+                        const sender = msg.sender;
+                        if (sender._id === you._id) {
+                          return (
+                            <div className="flex justify-end p-2">
+                              <section
+                                className={`rounded ${
+                                  theme
+                                    ? "bg-[#0171b6] text-white"
+                                    : "bg-[#0eb6fa]"
+                                }  py-1 px-3`}
+                              >
+                                <h1 key={i}>{msg.content}</h1>
+                                <b className={`flex justify-end text-xs `}>
+                                  {formatTime(msg.createdAt)}
+                                </b>
+                              </section>
+                            </div>
+                          );
+                        } else {
+                          return (
+                            <div className="p-2">
+                              <section
+                                className={`rounded w-fit py-1 px-3 ${
+                                  theme
+                                    ? "bg-[#212121] text-white"
+                                    : "bg-[#d6d6d7]"
+                                } `}
+                              >
+                                <h1 key={i}>{msg.content}</h1>
+                                <b className="flex justify-end text-xs">
+                                  {formatTime(msg.createdAt)}
+                                </b>
+                              </section>
+                            </div>
+                          );
+                        }
+                      })}
+                    </div>
+                  )
+                )}
               </>
             )}
           </div>
