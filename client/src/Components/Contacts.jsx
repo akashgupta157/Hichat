@@ -66,7 +66,7 @@ const Contacts = () => {
   }
   return (
     <div
-      className={`w-full md:w-[28vw] md:h-[97vh] rounded-xl py-5 px-4 md:py-8 md:px-5 ${
+      className={`w-full h-[100vh] md:w-[28vw] md:h-[97vh] md:rounded-xl py-5 px-4 md:py-8 md:px-5 ${
         theme ? "bg-[#131312]" : "bg-white"
       }`}
     >

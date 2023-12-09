@@ -66,7 +66,7 @@ const Messages = () => {
         setLoading(false);
       }
     })();
-  }, [selectChat, messageInput]);
+  }, [selectChat]);
   const groupMessagesByDate = (messages) => {
     // segregate chats by date
     const groupedMessages = {};
@@ -81,7 +81,7 @@ const Messages = () => {
   };
   return (
     <div
-      className={`w-full md:w-[64.4vw] h-[97vh] flex flex-col rounded-xl ${
+      className={`w-full h-[100vh] md:w-[64.4vw] md:h-[97vh] flex flex-col md:rounded-xl ${
         theme ? "bg-[#131312]" : "bg-white"
       }`}
     >
@@ -89,7 +89,7 @@ const Messages = () => {
         <>
           {/* navbar */}
           <nav
-            className={`flex justify-between items-center px-3 md:px-7 py-2 shadow-md ${
+            className={`flex justify-between items-center px-3 md:px-7 h-[9%] md:h-[10%] shadow-md ${
               theme ? "text-white shadow-gray-900" : "text-black"
             }`}
           >
@@ -142,7 +142,7 @@ const Messages = () => {
           {/* messagesArea */}
           <div
             ref={messagesContainerRef}
-            className="h-[75vh] md:h-[80vh] overflow-scroll overflow-x-hidden scrollbar-none"
+            className="h-[83%] md:h-[80%] overflow-scroll overflow-x-hidden scrollbar-none"
           >
             {loading ? (
               <div className="h-full flex items-center">
@@ -210,11 +210,11 @@ const Messages = () => {
           {/* messagesArea */}
           {/* input box for send message */}
           <footer
-            className={`border-t h-[5vh] md:h-[10vh] md:flex items-center justify-center ${
+            className={`border-t h-[8%] md:h-[10%] flex justify-center items-center ${
               theme ? "border-gray-800" : "border-gray-300"
             } `}
           >
-            <div className="mt-2 md:mt-0 flex items-center justify-center gap-2 w-full">
+            <div className="flex items-center justify-center gap-2 w-full">
               <div
                 className={`flex px-2 md:px-5 py-2 gap-3 rounded-lg w-[80%] md:w-[90%] ${
                   theme ? "bg-[#252425] text-[#bebebe]" : "bg-[#f6f6f7]"
