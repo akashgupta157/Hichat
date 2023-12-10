@@ -17,6 +17,12 @@ import {
   MenuHandler,
   MenuList,
   MenuItem,
+  Dialog,
+  DialogHeader,
+  DialogBody,
+  DialogFooter,
+  Button,
+  Input,
 } from "@material-tailwind/react";
 import { configure, formatDateTime, url } from "./misc";
 import axios from "axios";
@@ -29,6 +35,8 @@ const Contacts = () => {
   const selectChat = useSelector((state) => state.selectChat);
   const dispatch = useDispatch();
   const config = configure(you.token);
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(!open);
   const [search, setSearch] = useState();
   const [searchResults, setSearchResults] = useState([]);
   const [searchLoading, setSearchLoading] = useState(false);
@@ -103,7 +111,10 @@ const Contacts = () => {
                 <UserRound />
                 <p className="text-lg">Profile</p>
               </MenuItem>
-              <MenuItem className="flex items-center gap-2">
+              <MenuItem
+                className="flex items-center gap-2"
+                onClick={() => handleOpen()}
+              >
                 <UsersRound />
                 <p className="text-lg">Create Group</p>
               </MenuItem>
@@ -126,6 +137,46 @@ const Contacts = () => {
               </MenuItem>
             </MenuList>
           </Menu>
+          <Dialog
+            open={open}
+            size="sm"
+            handler={handleOpen}
+            className={`border ${theme ? "bg-[#131312]" : ""}`}
+          >
+            <DialogHeader className={`${theme ? "text-white" : ""}`}>
+              Create Group
+            </DialogHeader>
+            <DialogBody>
+              <div className="flex items-center justify-center gap-4">
+                <label htmlFor="file" className="cursor-pointer">
+                  <Avatar src="https://i.ibb.co/0hvhdRK/240-F-686603587-bo-Vdde3-U00-AMRWSVIMnz3-Gu-UBAouyued0.jpg" />
+                </label>
+                <input type="file" style={{ display: "none" }} id="file" />
+                <input
+                  type="text"
+                  className={`border p-2 rounded-md ${
+                    theme
+                      ? "text-white placeholder:text-gray-400"
+                      : "border-gray-900 text-black placeholder:text-gray-600"
+                  } bg-transparent outline-none`}
+                  placeholder="Enter Group Name"
+                />
+              </div>
+            </DialogBody>
+            <DialogFooter>
+              <Button
+                variant="text"
+                color="red"
+                onClick={handleOpen}
+                className="mr-1"
+              >
+                <span>Cancel</span>
+              </Button>
+              <Button variant="gradient" color="green" onClick={handleOpen}>
+                <span>Create Group</span>
+              </Button>
+            </DialogFooter>
+          </Dialog>
         </div>
       </div>
       {/* searchInput */}
