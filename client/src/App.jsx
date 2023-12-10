@@ -1,8 +1,6 @@
 import React from "react";
 import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import Chat from "./Pages/Chat";
-import Menu from "./Components/Menu";
-import Setting from "./Pages/Setting";
 import Login from "./Pages/Login";
 import Register from "./Pages/Register";
 import { useSelector } from "react-redux";
@@ -24,21 +22,13 @@ export default function App() {
         </div>
       ) : (
         <div className="flex">
-          {(pathname === "/chats" || pathname === "/setting") && <Menu />}
+          {/* {(pathname === "/chats" || pathname === "/setting") && <Menu />} */}
           <Routes>
             <Route
               path="/chats"
               element={
                 <PrivateRoute>
                   <Chat />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/setting"
-              element={
-                <PrivateRoute>
-                  <Setting />
                 </PrivateRoute>
               }
             />

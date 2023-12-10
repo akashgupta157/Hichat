@@ -1,10 +1,28 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Bell, Search, Loader2, MoreVertical } from "lucide-react";
-import { Avatar } from "@material-tailwind/react";
-import { configure, formatTime, url } from "./misc";
+import {
+  Bell,
+  Search,
+  Loader2,
+  MoreVertical,
+  UserRound,
+  UsersRound,
+  LogOut,
+  Sun,
+  Moon,
+} from "lucide-react";
+import {
+  Avatar,
+  Menu,
+  MenuHandler,
+  MenuList,
+  MenuItem,
+} from "@material-tailwind/react";
+import { configure, formatDateTime, url } from "./misc";
 import axios from "axios";
-import { selectedChat } from "../Redux/SelectedChat/action";
+import { notSelectedChat, selectedChat } from "../Redux/SelectedChat/action";
+import { toggleTheme } from "../Redux/Theme/action";
+import { logout } from "../Redux/Auth/action";
 const Contacts = () => {
   const theme = useSelector((state) => state.theme.isDarkMode);
   const you = useSelector((state) => state.auth.user);
@@ -65,20 +83,49 @@ const Contacts = () => {
     }
   }
   return (
-    <div
-      className={`w-full h-[100vh] md:w-[28vw] md:h-[97vh] md:rounded-xl py-5 px-4 md:py-8 md:px-5 ${
-        theme ? "bg-[#131312]" : "bg-white"
-      }`}
-    >
+    <div className={`contact h-full ${theme ? "bg-[#131312]" : "bg-white"}`}>
       <div
         className={`flex justify-between items-center ${
           theme ? "text-white" : "text-black"
         }`}
       >
         <h1 className="text-3xl font-semibold">Chats</h1>
-        <div className="flex items-center gap-1">
-          <Bell />
-          <MoreVertical className="md:hidden" />
+        <div className="flex items-center gap-3">
+          <Bell className="cursor-pointer" />
+          <Menu>
+            <MenuHandler>
+              <MoreVertical className="cursor-pointer" />
+            </MenuHandler>
+            <MenuList
+              className={`${theme ? "bg-[#131312] text-gray-400" : ""}`}
+            >
+              <MenuItem className="flex items-center gap-2">
+                <UserRound />
+                <p className="text-lg">Profile</p>
+              </MenuItem>
+              <MenuItem className="flex items-center gap-2">
+                <UsersRound />
+                <p className="text-lg">Create Group</p>
+              </MenuItem>
+              <MenuItem
+                className="flex items-center gap-2"
+                onClick={() => dispatch(toggleTheme())}
+              >
+                {theme ? <Moon /> : <Sun />}
+                <p className="text-lg">Theme</p>
+              </MenuItem>
+              <MenuItem
+                className="flex items-center gap-2"
+                onClick={() => {
+                  dispatch(notSelectedChat());
+                  dispatch(logout());
+                }}
+              >
+                <LogOut />
+                <p className="text-lg">Logout</p>
+              </MenuItem>
+            </MenuList>
+          </Menu>
         </div>
       </div>
       {/* searchInput */}
@@ -96,9 +143,9 @@ const Contacts = () => {
             <Search strokeWidth={2} />
           )}
           <input
-            type="text"
+            type="search"
             id="search"
-            placeholder="Search"
+            placeholder="Search by name and email..."
             autoComplete="off"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -180,13 +227,17 @@ const Contacts = () => {
                   key={index}
                   className={`flex p-3 rounded-xl  justify-between items-start cursor-pointer ${
                     chatList.length > 5 ? "mr-2" : ""
-                  } ${theme ? "hover:bg-[#4c4d52]" : "hover:bg-[#d6d6d7]"}
+                  } ${
+                    theme
+                      ? "hover:bg-[#4c4d52] bg-[#171718]"
+                      : "hover:bg-[#d6d6d7] bg-[#f7f7f7]"
+                  }
                 ${
                   selectChat.isChatSelected &&
                   selectChat.data.detail._id == chatName._id
                     ? theme
                       ? "bg-gray-900 hover:bg-gray-900"
-                      : "bg-gray-500 hover:bg-gray-500"
+                      : "bg-gray-300 hover:bg-gray-300"
                     : null
                 }`}
                   onClick={() => {
@@ -220,13 +271,17 @@ const Contacts = () => {
                   key={index}
                   className={`flex p-3 rounded-xl justify-between items-start cursor-pointer ${
                     chatList.length > 5 ? "mr-2" : ""
-                  } ${theme ? "hover:bg-[#4c4d52]" : "hover:bg-[#d6d6d7]"}
+                  } ${
+                    theme
+                      ? "hover:bg-[#4c4d52] bg-[#171718]"
+                      : "hover:bg-[#d6d6d7] bg-[#f7f7f7]"
+                  }
               ${
                 selectChat.isChatSelected &&
                 selectChat.data.detail._id == chatName._id
                   ? theme
                     ? "bg-gray-900 hover:bg-gray-900"
-                    : "bg-gray-500 hover:bg-gray-500"
+                    : "bg-gray-300 hover:bg-gray-300"
                   : null
               }`}
                   onClick={() => {
@@ -253,7 +308,7 @@ const Contacts = () => {
                     </div>
                   </div>
                   <small className={`${theme ? "text-white" : "text-black"}`}>
-                    {formatTime(item.updatedAt)}
+                    {formatDateTime(item.updatedAt)}
                   </small>
                 </div>
               );

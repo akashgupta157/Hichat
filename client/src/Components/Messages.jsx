@@ -3,7 +3,13 @@ import {
   IconButton,
   Drawer,
   Typography,
+  Menu,
+  MenuHandler,
+  MenuList,
+  MenuItem,
 } from "@material-tailwind/react";
+import data from "@emoji-mart/data";
+import Picker from "@emoji-mart/react";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -79,12 +85,15 @@ const Messages = () => {
     });
     return groupedMessages;
   };
+  const addEmoji = (e) => {
+    const sym = e.unified.split("_");
+    const cA = [];
+    sym.forEach((el) => cA.push("0x" + el));
+    let emoji = String.fromCodePoint(...cA);
+    setMessageInput(messageInput + emoji);
+  };
   return (
-    <div
-      className={`w-full h-[100vh] md:w-[64.4vw] md:h-[97vh] flex flex-col md:rounded-xl ${
-        theme ? "bg-[#131312]" : "bg-white"
-      }`}
-    >
+    <div className={`message h-full ${theme ? "bg-[#131312]" : "bg-white"}`}>
       {selectChat.isChatSelected ? (
         <>
           {/* navbar */}
@@ -95,7 +104,7 @@ const Messages = () => {
           >
             <div className="flex items-center gap-2 md:gap-4">
               <ArrowLeft
-                className="md:hidden"
+                className="lg:hidden"
                 onClick={() => {
                   dispatch(notSelectedChat());
                 }}
@@ -142,7 +151,7 @@ const Messages = () => {
           {/* messagesArea */}
           <div
             ref={messagesContainerRef}
-            className="h-[83%] md:h-[80%] overflow-scroll overflow-x-hidden scrollbar-none"
+            className="h-[83%] md:h-[80%] pt-5 overflow-scroll overflow-x-hidden scrollbar-none"
           >
             {loading ? (
               <div className="h-full flex items-center">
@@ -217,11 +226,26 @@ const Messages = () => {
             <div className="flex items-center justify-center gap-2 w-full">
               <div
                 className={`flex px-2 md:px-5 py-2 gap-3 rounded-lg w-[80%] md:w-[90%] ${
-                  theme ? "bg-[#252425] text-[#bebebe]" : "bg-[#f6f6f7]"
+                  theme ? "bg-[#252425] text-[#bebebe]" : "bg-gray-300"
                 }`}
               >
-                <Smile cursor={"pointer"} />
-                <Paperclip cursor={"pointer"} />
+                <Menu>
+                  <MenuHandler>
+                    <Smile cursor={"pointer"} />
+                  </MenuHandler>
+                  <MenuList className={`p-0 border-0 rounded-xl`}>
+                    <Picker data={data} onEmojiSelect={addEmoji} />
+                  </MenuList>
+                </Menu>
+                <label htmlFor="file" className="flex items-center">
+                  <Paperclip cursor={"pointer"} size={"20px"} />
+                </label>
+                <input
+                  type="file"
+                  style={{ display: "none" }}
+                  id="file"
+                  // onChange={(e) => onFileChange(e)}
+                />
                 <input
                   type="text"
                   required
@@ -239,6 +263,7 @@ const Messages = () => {
               </div>
               <IconButton
                 type="submit"
+                // disabled={loadingFile}
                 className="bg-[#000000]"
                 onClick={() => {
                   sendMsg();

@@ -19,7 +19,7 @@ const Chat = () => {
     <>
       {isLargeScreen ? (
         <div
-          className={`flex py-[1.5vh] pr-[.8vw] gap-[.8vw] ${
+          className={`chat flex gap-4 w-full h-[100vh] ${
             theme ? "bg-[#010001]" : "bg-[#f6f6f7]"
           }`}
         >
@@ -27,7 +27,9 @@ const Chat = () => {
           <Messages />
         </div>
       ) : (
-        <>{selectChat.isChatSelected ? <Messages /> : <Contacts />}</>
+        <div className={`chat w-full h-[100vh] ${theme ? "bg-[#010001]" : "bg-[#f6f6f7]"}`}>
+          {selectChat.isChatSelected ? <Messages /> : <Contacts />}
+        </div>
       )}
     </>
   );

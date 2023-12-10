@@ -1,7 +1,7 @@
 const chatModel = require("../models/chat.model");
 const userModel = require("../models/user.model");
 const router = require("express").Router();
-//accessChat
+//accessChat(one-to-one)
 router.post("/", async (req, res) => {
   const { userId } = req.body;
   if (!userId) {
@@ -42,7 +42,7 @@ router.post("/", async (req, res) => {
     }
   }
 });
-//fetchChat
+//fetchChat(one-to-one)
 router.get("/", async (req, res) => {
   try {
     chatModel
@@ -62,7 +62,29 @@ router.get("/", async (req, res) => {
     res.send("Error: " + error.message);
   }
 });
-router.post("/group", async (req, res) => {});
+//createGroupChat
+router.post("/group", async (req, res) => {
+  if (!req.body.user || !req.body.name) {
+    return res.send({ message: "Please Fill all the fields", GC: false });
+  }
+  var members = JSON.parse(req.body.user);
+  members.push(req.user);
+  try {
+    const groupChat = await chatModel.create({
+      chatName: req.body.name,
+      members,
+      isGroupChat: true,
+      groupAdmin: req.user,
+    });
+    const wholeGroupChat = await chatModel
+      .findOne({ _id: groupChat._id })
+      .populate("members", "-password")
+      .populate("groupAdmin", "-password");
+    res.json({ message: "Group chat created", GC: true, wholeGroupChat });
+  } catch (error) {
+    res.send("Error: " + error.message);
+  }
+});
 router.get("/group", async (req, res) => {});
 // router.post("/", async (req, res) => {});
 module.exports = router;
