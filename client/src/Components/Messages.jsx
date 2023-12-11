@@ -92,6 +92,7 @@ const Messages = () => {
     let emoji = String.fromCodePoint(...cA);
     setMessageInput(messageInput + emoji);
   };
+  console.log(selectChat);
   return (
     <div className={`message h-full ${theme ? "bg-[#131312]" : "bg-white"}`}>
       {selectChat.isChatSelected ? (
@@ -110,15 +111,23 @@ const Messages = () => {
                 }}
               />
               <Avatar
-                src={selectChat.data.detail.profilePicture}
+                src={
+                  selectChat.data.isChatGroup
+                    ? selectChat.data.detail.groupPicture
+                    : selectChat.data.detail.profilePicture
+                }
                 size="sm"
                 alt="avatar"
               />
               <div>
                 <h3 className={`font-semibold text-md md:text-lg`}>
-                  {selectChat.data.detail.name}
+                  {selectChat.data.isChatGroup
+                    ? selectChat.data.detail.chatName
+                    : selectChat.data.detail.name}
                 </h3>
-                <p className={`font-medium text-sm`}>Online</p>
+                {selectChat.data.isChatGroup || (
+                  <p className={`font-medium text-sm`}>Online</p>
+                )}
               </div>
             </div>
             <div className="flex items-center gap-4">
@@ -174,6 +183,7 @@ const Messages = () => {
                       </h2>
                       {messages.map((msg, i) => {
                         const sender = msg.sender;
+                        console.log(sender);
                         if (sender._id === you._id) {
                           return (
                             <div className="flex justify-end p-2">
@@ -193,7 +203,7 @@ const Messages = () => {
                           );
                         } else {
                           return (
-                            <div className="p-2">
+                            <div className="p-2 min-w-[50%]">
                               <section
                                 className={`rounded w-fit py-1 px-3 ${
                                   theme
@@ -201,7 +211,12 @@ const Messages = () => {
                                     : "bg-[#d6d6d7]"
                                 } `}
                               >
-                                <h1 key={i}>{msg.content}</h1>
+                                {selectChat.data.isChatGroup && (
+                                  <small>~ {sender.name}</small>
+                                )}
+                                <p key={i} className="">
+                                  {msg.content}
+                                </p>
                                 <b className="flex justify-end text-xs">
                                   {formatTime(msg.createdAt)}
                                 </b>

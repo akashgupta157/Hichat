@@ -298,7 +298,6 @@ const Contacts = () => {
         >
           {chatList?.map((item, index) => {
             var chatName = "";
-            console.log(item);
             if (item.isGroupChat) {
               chatName = item;
             } else {
@@ -328,18 +327,33 @@ const Contacts = () => {
                     : null
                 }`}
                   onClick={() => {
-                    dispatch(selectedChat({ id: item._id, detail: chatName }));
+                    dispatch(
+                      selectedChat({
+                        id: item._id,
+                        detail: chatName,
+                        isChatGroup: chatName.isGroupChat ? true : false,
+                      })
+                    );
                   }}
                 >
                   <div className="flex gap-3">
-                    <Avatar src={chatName.profilePicture} alt="" />
+                    <Avatar
+                      src={
+                        chatName.isGroupChat
+                          ? chatName.groupPicture
+                          : chatName.profilePicture
+                      }
+                      alt=""
+                    />
                     <div>
                       <h2
                         className={`font-bold text-base	${
                           theme ? "text-white" : "text-black"
                         }`}
                       >
-                        {chatName.name}
+                        {chatName.isGroupChat
+                          ? chatName.chatName
+                          : chatName.name}
                       </h2>
                       <p
                         className={`text-sm	${
@@ -372,7 +386,13 @@ const Contacts = () => {
                   : null
               }`}
                   onClick={() => {
-                    dispatch(selectedChat({ id: item._id, detail: chatName }));
+                    dispatch(
+                      selectedChat({
+                        id: item._id,
+                        detail: chatName,
+                        isChatGroup: chatName.isGroupChat ? true : false,
+                      })
+                    );
                   }}
                 >
                   <div className="flex gap-3">
@@ -403,7 +423,7 @@ const Contacts = () => {
                           ? `${
                               chatName.latestMessage.sender._id === you._id
                                 ? "You"
-                                : chatName.latestMessage.sender.name[0]
+                                : chatName.latestMessage.sender.name
                             } : ${chatName.latestMessage.content}`
                           : item.latestMessage.content}
                       </p>
