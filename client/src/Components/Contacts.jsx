@@ -79,7 +79,10 @@ const Contacts = () => {
   async function addChatList(userId) {
     let found = false;
     for (const chat of chatList) {
-      if (chat.members.some((member) => member._id === userId)) {
+      if (
+        chat.isGroupChat === false &&
+        chat.members.some((member) => member._id === userId)
+      ) {
         found = true;
       }
     }
@@ -110,7 +113,8 @@ const Contacts = () => {
         },
         config
       );
-      console.log(data);
+      handleOpen();
+      setChatList([data.wholeGroupChat, ...chatList]);
     }
   };
   return (
@@ -292,7 +296,9 @@ const Contacts = () => {
         </div>
       ) : (
         <div
-          className={`h-[70vh] ${
+          className={`h-[70vh] scrollbar-none ${
+            chatList.length > 6 ? "overflow-scroll" : ""
+          } md:${
             chatList.length > 5 ? "overflow-scroll" : ""
           }  overflow-x-hidden mt-7 flex flex-col gap-1`}
         >
@@ -311,9 +317,7 @@ const Contacts = () => {
               return (
                 <div
                   key={index}
-                  className={`flex p-3 rounded-xl  justify-between items-start cursor-pointer ${
-                    chatList.length > 5 ? "mr-2" : ""
-                  } ${
+                  className={`flex p-3 rounded-xl  justify-between items-start cursor-pointer  ${
                     theme
                       ? "hover:bg-[#4c4d52] bg-[#171718]"
                       : "hover:bg-[#d6d6d7] bg-[#f7f7f7]"
@@ -370,9 +374,7 @@ const Contacts = () => {
               return (
                 <div
                   key={index}
-                  className={`flex p-3 rounded-xl justify-between items-start cursor-pointer ${
-                    chatList.length > 5 ? "mr-2" : ""
-                  } ${
+                  className={`flex p-3 rounded-xl justify-between items-start cursor-pointer  ${
                     theme
                       ? "hover:bg-[#4c4d52] bg-[#171718]"
                       : "hover:bg-[#d6d6d7] bg-[#f7f7f7]"

@@ -92,7 +92,6 @@ const Messages = () => {
     let emoji = String.fromCodePoint(...cA);
     setMessageInput(messageInput + emoji);
   };
-  console.log(selectChat);
   return (
     <div className={`message h-full ${theme ? "bg-[#131312]" : "bg-white"}`}>
       {selectChat.isChatSelected ? (
