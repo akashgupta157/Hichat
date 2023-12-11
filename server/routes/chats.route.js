@@ -64,17 +64,17 @@ router.get("/", async (req, res) => {
 });
 //createGroupChat
 router.post("/group", async (req, res) => {
-  if (!req.body.user || !req.body.name) {
+  if (!req.body.members || !req.body.name) {
     return res.send({ message: "Please Fill all the fields", GC: false });
   }
-  var members = JSON.parse(req.body.user);
-  members.push(req.user);
+  var members = req.body.members;
+  members.push(req.user.userId);
   try {
     const groupChat = await chatModel.create({
       chatName: req.body.name,
       members,
       isGroupChat: true,
-      groupAdmin: req.user,
+      groupAdmin: req.user.userId,
     });
     const wholeGroupChat = await chatModel
       .findOne({ _id: groupChat._id })

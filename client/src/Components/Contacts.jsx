@@ -91,6 +91,28 @@ const Contacts = () => {
       setSearch("");
     }
   }
+  const [groupName, setGroupName] = useState("");
+  const [selectedMembers, setSelectedMembers] = useState([]);
+  const handleMembersSelect = (members) => {
+    setSelectedMembers(members);
+  };
+  const createGroup = async () => {
+    if (groupName?.length === 0) {
+      alert("Please Enter Group Name");
+    } else if (selectedMembers.length < 2) {
+      alert("minimum 2 members required!");
+    } else {
+      const { data } = await axios.post(
+        `${url}/chat/group`,
+        {
+          name: groupName,
+          members: selectedMembers,
+        },
+        config
+      );
+      console.log(data);
+    }
+  };
   return (
     <div className={`contact h-full ${theme ? "bg-[#131312]" : "bg-white"}`}>
       <div
@@ -164,9 +186,10 @@ const Contacts = () => {
                       : "border-gray-900 text-black placeholder:text-gray-600"
                   } bg-transparent`}
                   placeholder="Enter Group Name"
+                  onChange={(e) => setGroupName(e.target.value)}
                 />
               </div>
-              <MultiSelect />
+              <MultiSelect onMembersSelect={handleMembersSelect} />
             </DialogBody>
             <DialogFooter>
               <Button
@@ -177,7 +200,7 @@ const Contacts = () => {
               >
                 <span>Cancel</span>
               </Button>
-              <Button variant="gradient" color="green" onClick={handleOpen}>
+              <Button variant="gradient" color="green" onClick={createGroup}>
                 <span>Create Group</span>
               </Button>
             </DialogFooter>
@@ -275,8 +298,9 @@ const Contacts = () => {
         >
           {chatList?.map((item, index) => {
             var chatName = "";
+            console.log(item);
             if (item.isGroupChat) {
-              chatName = item.chatName;
+              chatName = item;
             } else {
               item.members.map((i) => {
                 if (i._id != you._id) {
@@ -352,21 +376,36 @@ const Contacts = () => {
                   }}
                 >
                   <div className="flex gap-3">
-                    <Avatar src={chatName.profilePicture} alt="" />
+                    <Avatar
+                      src={
+                        chatName.isGroupChat
+                          ? chatName.groupPicture
+                          : chatName.profilePicture
+                      }
+                      alt=""
+                    />
                     <div>
                       <h2
                         className={`font-bold text-base	${
                           theme ? "text-white" : "text-black"
                         }`}
                       >
-                        {chatName.name}
+                        {chatName.isGroupChat
+                          ? chatName.chatName
+                          : chatName.name}
                       </h2>
                       <p
                         className={`text-sm	${
                           theme ? "text-white" : "text-black"
                         }`}
                       >
-                        {item.latestMessage.content}
+                        {chatName.isGroupChat
+                          ? `${
+                              chatName.latestMessage.sender._id === you._id
+                                ? "You"
+                                : chatName.latestMessage.sender.name[0]
+                            } : ${chatName.latestMessage.content}`
+                          : item.latestMessage.content}
                       </p>
                     </div>
                   </div>

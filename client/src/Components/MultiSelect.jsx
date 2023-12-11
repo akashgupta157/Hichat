@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { configure, url } from "./misc";
 import { useSelector } from "react-redux";
 import { X } from "lucide-react";
 import { Avatar } from "@material-tailwind/react";
-const MultiSelect = () => {
+const MultiSelect = ({ onMembersSelect }) => {
   const theme = useSelector((state) => state.theme.isDarkMode);
   const you = useSelector((state) => state.auth.user);
   const config = configure(you.token);
   const [groupSearch, setGroupSearch] = useState("");
   const [groupSearchResults, setGroupSearchResults] = useState([]);
   const [selectedMembers, setSelectedMembers] = useState([]);
-
+  const inputRef = useRef();  
   useEffect(() => {
     const fetchResults = async () => {
       try {
@@ -47,12 +47,15 @@ const MultiSelect = () => {
       prevMembers.filter((member) => member._id !== memberId)
     );
   };
+  useEffect(() => {
+    onMembersSelect(selectedMembers.map(member => member._id));
+  }, [selectedMembers]);
   return (
     <div>
       <div
         className={`border flex flex-wrap items-center rounded-md gap-2 p-2 ${
           theme ? "text-white" : "border-gray-900 text-black"
-        }`}
+        }`} onClick={()=>inputRef.current.focus()}
       >
         <div className="flex gap-2 items-center">
           {selectedMembers.map((member) => (
@@ -71,6 +74,7 @@ const MultiSelect = () => {
         </div>
         <input
           type="text"
+          ref={inputRef}
           placeholder="Search for group members"
           value={groupSearch}
           onChange={(e) => setGroupSearch(e.target.value)}
@@ -79,7 +83,7 @@ const MultiSelect = () => {
           }`}
         />
       </div>
-      <div className="relative flex justify-center">
+      <div className="relative flex justify-center z-10">
         {groupSearchResults.length > 0 && (
           <div
             className={`absolute border w-[80%] mt-2 rounded-md py-3 px-5 flex flex-col gap-3 ${
