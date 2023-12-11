@@ -77,28 +77,45 @@ const Contacts = () => {
     fetchList();
   }, []);
   async function addChatList(userId) {
-    let found = false;
     for (const chat of chatList) {
       if (
         chat.isGroupChat === false &&
         chat.members.some((member) => member._id === userId)
       ) {
-        found = true;
+        setSearch("");
+        chat.members.filter((e) => {
+          if (e._id !== you._id) {
+            dispatch(
+              selectedChat({
+                id: chat._id,
+                detail: e,
+                isChatGroup: false,
+              })
+            );
+          }
+        });
+        break;
+      } else {
+        setSearch("");
+        const { data } = await axios.post(`${url}/chat`, { userId }, config);
+        data.members.filter((e) => {
+          if (e._id !== you._id) {
+            dispatch(
+              selectedChat({
+                id: data._id,
+                detail: e,
+                isChatGroup: false,
+              })
+            );
+          }
+        });
+        setChatList([data, ...chatList]);
       }
     }
-    if (found === false) {
-      setSearch("");
-      const { data } = await axios.post(`${url}/chat`, { userId }, config);
-      setChatList([data, ...chatList]);
-    } else {
-      setSearch("");
-    }
   }
+  //create group
   const [groupName, setGroupName] = useState("");
   const [selectedMembers, setSelectedMembers] = useState([]);
-  const handleMembersSelect = (members) => {
-    setSelectedMembers(members);
-  };
   const createGroup = async () => {
     if (groupName?.length === 0) {
       alert("Please Enter Group Name");
@@ -113,8 +130,15 @@ const Contacts = () => {
         },
         config
       );
-      handleOpen();
+      dispatch(
+        selectedChat({
+          id: data.wholeGroupChat._id,
+          detail: data.wholeGroupChat,
+          isChatGroup: true,
+        })
+      );
       setChatList([data.wholeGroupChat, ...chatList]);
+      handleOpen();
     }
   };
   return (
@@ -193,7 +217,9 @@ const Contacts = () => {
                   onChange={(e) => setGroupName(e.target.value)}
                 />
               </div>
-              <MultiSelect onMembersSelect={handleMembersSelect} />
+              <MultiSelect
+                onMembersSelect={(members) => setSelectedMembers(members)}
+              />
             </DialogBody>
             <DialogFooter>
               <Button

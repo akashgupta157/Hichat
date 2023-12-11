@@ -182,7 +182,6 @@ const Messages = () => {
                       </h2>
                       {messages.map((msg, i) => {
                         const sender = msg.sender;
-                        console.log(sender);
                         if (sender._id === you._id) {
                           return (
                             <div className="flex justify-end p-2">
