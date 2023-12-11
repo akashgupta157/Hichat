@@ -29,6 +29,7 @@ import axios from "axios";
 import { notSelectedChat, selectedChat } from "../Redux/SelectedChat/action";
 import { toggleTheme } from "../Redux/Theme/action";
 import { logout } from "../Redux/Auth/action";
+import MultiSelect from "./MultiSelect";
 const Contacts = () => {
   const theme = useSelector((state) => state.theme.isDarkMode);
   const you = useSelector((state) => state.auth.user);
@@ -146,22 +147,26 @@ const Contacts = () => {
             <DialogHeader className={`${theme ? "text-white" : ""}`}>
               Create Group
             </DialogHeader>
-            <DialogBody>
-              <div className="flex items-center justify-center gap-4">
+            <DialogBody className="flex flex-col gap-3.5">
+              <div className="flex flex-col md:flex-row md:items-center justify-start gap-4 ">
                 <label htmlFor="file" className="cursor-pointer">
-                  <Avatar src="https://i.ibb.co/0hvhdRK/240-F-686603587-bo-Vdde3-U00-AMRWSVIMnz3-Gu-UBAouyued0.jpg" />
+                  <Avatar
+                    size="lg"
+                    src="https://i.ibb.co/0hvhdRK/240-F-686603587-bo-Vdde3-U00-AMRWSVIMnz3-Gu-UBAouyued0.jpg"
+                  />
                 </label>
                 <input type="file" style={{ display: "none" }} id="file" />
                 <input
                   type="text"
-                  className={`border p-2 rounded-md ${
+                  className={`border p-2 rounded-md w-full md:w-[85%] ${
                     theme
                       ? "text-white placeholder:text-gray-400"
                       : "border-gray-900 text-black placeholder:text-gray-600"
-                  } bg-transparent outline-none`}
+                  } bg-transparent`}
                   placeholder="Enter Group Name"
                 />
               </div>
+              <MultiSelect />
             </DialogBody>
             <DialogFooter>
               <Button
@@ -218,17 +223,24 @@ const Contacts = () => {
                 {searchResults.map((item, i) => (
                   <div
                     key={i}
-                    className={`flex gap-2 p-2 rounded-xl items-center cursor-pointer ${
+                    className={`flex gap-3 p-2 rounded-xl items-center cursor-pointer ${
                       theme ? "hover:bg-[#4c4d52]" : "hover:bg-[#d6d6d7]"
                     }`}
                     onClick={() => {
                       addChatList(item._id);
                     }}
                   >
-                    <Avatar src={item.profilePicture} size="xs" />
-                    <p className={`${theme ? "text-white" : "text-black"}`}>
-                      {item.name}
-                    </p>
+                    <Avatar src={item.profilePicture} size="sm" />
+                    <div>
+                      <p className={`${theme ? "text-white" : "text-black"}`}>
+                        {item.name}
+                      </p>
+                      <small
+                        className={`${theme ? "text-white" : "text-black"}`}
+                      >
+                        {item.email}
+                      </small>
+                    </div>
                   </div>
                 ))}
               </div>
