@@ -63,7 +63,20 @@ const Contacts = () => {
     return () => {
       socket.off("online users");
     };
-  },[]);
+  }, []);
+  useEffect(() => {
+    socket.on("message received", (newMessage) => {
+      chatList.filter((chat,i) => {
+        if (chat._id === newMessage.chat._id) {
+          chat.latestMessage.content = newMessage.content;
+          chat.latestMessage.createdAt = newMessage.createdAt;
+          chat.latestMessage.sender = newMessage.sender;
+          chatList.splice(i, 1)
+          setChatList([chat, ...chatList]);
+        }
+      });
+    });
+  });
   const isUserOnline = (userId) => {
     return onlineUsers.includes(userId);
   };
