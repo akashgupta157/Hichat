@@ -66,12 +66,13 @@ const Contacts = () => {
   }, []);
   useEffect(() => {
     socket.on("message received", (newMessage) => {
-      chatList.filter((chat,i) => {
+      chatList.filter((chat, i) => {
         if (chat._id === newMessage.chat._id) {
+          // console.log(chat)
           chat.latestMessage.content = newMessage.content;
-          chat.latestMessage.createdAt = newMessage.createdAt;
+          chat.updatedAt = newMessage.updatedAt;
           chat.latestMessage.sender = newMessage.sender;
-          chatList.splice(i, 1)
+          chatList.splice(i, 1);
           setChatList([chat, ...chatList]);
         }
       });
