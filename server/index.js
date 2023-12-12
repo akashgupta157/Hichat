@@ -45,7 +45,7 @@ io.on("connection", (socket) => {
     });
   });
   socket.on("logout", (userId) => {
-    delete onlineUsers[userId]; // Mark user as offline
+    delete onlineUsers[userId];
     io.emit("online users", Object.keys(onlineUsers));
   });
   socket.off("setup", () => {
