@@ -31,7 +31,7 @@ import { toggleTheme } from "../Redux/Theme/action";
 import { logout } from "../Redux/Auth/action";
 import MultiSelect from "./MultiSelect";
 import io from "socket.io-client";
-import AvataR from "./Avatar";
+import AvataR from "./AvataR";
 var socket;
 const Contacts = () => {
   const theme = useSelector((state) => state.theme.isDarkMode);
