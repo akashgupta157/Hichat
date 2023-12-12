@@ -30,6 +30,9 @@ import { notSelectedChat, selectedChat } from "../Redux/SelectedChat/action";
 import { toggleTheme } from "../Redux/Theme/action";
 import { logout } from "../Redux/Auth/action";
 import MultiSelect from "./MultiSelect";
+import io from "socket.io-client";
+import AvataR from "./Avatar";
+var socket;
 const Contacts = () => {
   const theme = useSelector((state) => state.theme.isDarkMode);
   const you = useSelector((state) => state.auth.user);
@@ -43,6 +46,27 @@ const Contacts = () => {
   const [searchLoading, setSearchLoading] = useState(false);
   const [listLoading, setListLoading] = useState(true);
   const [chatList, setChatList] = useState([]);
+  const [socketConnection, setSocketConnection] = useState(false);
+  useEffect(() => {
+    socket = io(url);
+    socket.emit("setup", you);
+    socket.on("connection", () => {
+      setSocketConnection(!socketConnection);
+    });
+  }, []);
+  //online or offline
+  const [onlineUsers, setOnlineUsers] = useState([]);
+  useEffect(() => {
+    socket.on("online users", (users) => {
+      setOnlineUsers(users);
+    });
+    return () => {
+      socket.off("online users");
+    };
+  },[]);
+  const isUserOnline = (userId) => {
+    return onlineUsers.includes(userId);
+  };
   useEffect(() => {
     const fetchResults = async () => {
       try {
@@ -179,6 +203,7 @@ const Contacts = () => {
               <MenuItem
                 className="flex items-center gap-2"
                 onClick={() => {
+                  socket.emit("logout", you._id);
                   dispatch(notSelectedChat());
                   dispatch(logout());
                 }}
@@ -367,14 +392,17 @@ const Contacts = () => {
                   }}
                 >
                   <div className="flex gap-3">
-                    <Avatar
-                      src={
-                        chatName.isGroupChat
-                          ? chatName.groupPicture
-                          : chatName.profilePicture
-                      }
-                      alt=""
-                    />
+                    {chatName.isGroupChat ? (
+                      <Avatar src={chatName.groupPicture} alt="" />
+                    ) : (
+                      <AvataR
+                        src={chatName.profilePicture}
+                        w={12}
+                        h={12}
+                        isOnline={isUserOnline(chatName._id)}
+                        alt=""
+                      />
+                    )}
                     <div>
                       <h2
                         className={`font-bold text-base	${
@@ -424,14 +452,17 @@ const Contacts = () => {
                   }}
                 >
                   <div className="flex gap-3">
-                    <Avatar
-                      src={
-                        chatName.isGroupChat
-                          ? chatName.groupPicture
-                          : chatName.profilePicture
-                      }
-                      alt=""
-                    />
+                    {chatName.isGroupChat ? (
+                      <Avatar src={chatName.groupPicture} alt="" />
+                    ) : (
+                      <AvataR
+                        src={chatName.profilePicture}
+                        w={12}
+                        h={12}
+                        isOnline={isUserOnline(chatName._id)}
+                        alt=""
+                      />
+                    )}
                     <div>
                       <h2
                         className={`font-bold text-base	${

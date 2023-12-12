@@ -6,7 +6,6 @@ import {
   Menu,
   MenuHandler,
   MenuList,
-  MenuItem,
 } from "@material-tailwind/react";
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
@@ -27,6 +26,8 @@ import logo from "../assets/logo.png";
 import { notSelectedChat } from "../Redux/SelectedChat/action";
 import { configure, formatTime, url } from "./misc";
 import axios from "axios";
+import io from "socket.io-client";
+var socket, selectedChatCompare;
 const Messages = () => {
   const dispatch = useDispatch();
   const theme = useSelector((state) => state.theme.isDarkMode);
@@ -46,21 +47,62 @@ const Messages = () => {
         messagesContainerRef.current.scrollHeight;
     }
   }, [allMessages, selectChat]);
+  // TODO socket.io
+  // connect to socket
+  const [socketConnection, setSocketConnection] = useState(false);
+  useEffect(() => {
+    socket = io(url);
+    socket.emit("setup", you);
+    socket.on("connection", () => {
+      setSocketConnection(!socketConnection);
+    });
+  }, []);
+  //online or offline
+  const [onlineUsers, setOnlineUsers] = useState([]);
+  useEffect(() => {
+    socket.on("online users", (users) => {
+      setOnlineUsers(users);
+    });
+    return () => {
+      socket.off("online users");
+    };
+  }, []);
+  const isUserOnline = (userId) => {
+    return onlineUsers.includes(userId);
+  };
+  // new msg
+  useEffect(() => {
+    socket.on("message received", (newMessage) => {
+      if (
+        !selectedChatCompare ||
+        selectedChatCompare.data.id !== newMessage.chat._id
+      ) {
+        //notify
+      } else {
+        setAllMessages([...allMessages, newMessage]);
+      }
+    });
+  });
   const sendMsg = () => {
-    //send msg
+    // TODO send msg
     if (messageInput.length > 0) {
-      axios.post(
-        `${url}/message`,
-        {
-          content: messageInput,
-          chatId: selectChat.data.id,
-        },
-        config
-      );
+      axios
+        .post(
+          `${url}/message`,
+          {
+            content: messageInput,
+            chatId: selectChat.data.id,
+          },
+          config
+        )
+        .then((res) => {
+          setAllMessages([...allMessages, res.data]);
+          socket.emit("new message", res.data);
+        });
     }
   };
   useEffect(() => {
-    //fetch All Messages
+    // todo fetch All Messages
     (async function () {
       if (selectChat.isChatSelected) {
         setLoading(true);
@@ -70,11 +112,13 @@ const Messages = () => {
         );
         setAllMessages(data);
         setLoading(false);
+        socket.emit("join chat", selectChat.data.id);
       }
     })();
+    selectedChatCompare = selectChat;
   }, [selectChat]);
   const groupMessagesByDate = (messages) => {
-    // segregate chats by date
+    // todo segregate chats by date
     const groupedMessages = {};
     messages.forEach((msg) => {
       const dateKey = new Date(msg.createdAt).toDateString();
@@ -125,7 +169,11 @@ const Messages = () => {
                     : selectChat.data.detail.name}
                 </h3>
                 {selectChat.data.isChatGroup || (
-                  <p className={`font-medium text-sm`}>Online</p>
+                  <p className={`font-medium text-sm`}>
+                    {isUserOnline(selectChat.data.detail._id)
+                      ? "Online"
+                      : "Offline"}
+                  </p>
                 )}
               </div>
             </div>
