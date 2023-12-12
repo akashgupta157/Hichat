@@ -7,7 +7,7 @@ const userRoute = require("./routes/user.route");
 const chatRoute = require("./routes/chats.route");
 const messageRoute = require("./routes/messages.route");
 app.use(express.json());
-app.use(cors({ origin: "*" }));
+app.use(cors());
 app.use("/auth", userRoute);
 app.use("/chat", userMiddleware, chatRoute);
 app.use("/message", userMiddleware, messageRoute);
