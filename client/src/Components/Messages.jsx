@@ -77,7 +77,7 @@ const Messages = () => {
     socket.on("message received", (newMessage) => {
       if (
         !selectedChatCompare ||
-        selectedChatCompare.data.id !== newMessage.chat._id
+        selectedChatCompare.data?.id !== newMessage.chat._id
       ) {
         //notify
       } else {

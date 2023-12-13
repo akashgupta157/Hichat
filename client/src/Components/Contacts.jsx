@@ -87,7 +87,7 @@ const Contacts = () => {
           chat.latestMessage.sender = newMessage.sender;
           const uniqueArray = removeDuplicates([chat, ...chatList], "_id");
           setChatList(uniqueArray);
-          if (selectedChatCompare.data.id !== newMessage.chat._id) {
+          if (selectedChatCompare.data?.id !== newMessage.chat._id) {
             const sound = new Audio(messageSound);
             sound.play();
             setNotifyChats([chat._id, ...notifyChats]);
