@@ -146,40 +146,57 @@ const Contacts = () => {
     fetchList();
   }, []);
   async function addChatList(userId) {
-    for (const chat of chatList) {
-      if (
-        chat.isGroupChat === false &&
-        chat.members.some((member) => member._id === userId)
-      ) {
-        setSearch("");
-        chat.members.filter((e) => {
-          if (e._id !== you._id) {
-            dispatch(
-              selectedChat({
-                id: chat._id,
-                detail: e,
-                isChatGroup: false,
-              })
-            );
-          }
-        });
-        break;
-      } else {
-        setSearch("");
-        const { data } = await axios.post(`${url}/chat`, { userId }, config);
-        data.members.filter((e) => {
-          if (e._id !== you._id) {
-            dispatch(
-              selectedChat({
-                id: data._id,
-                detail: e,
-                isChatGroup: false,
-              })
-            );
-          }
-        });
-        setChatList([data, ...chatList]);
+    if (chatList.length > 0) {
+      for (const chat of chatList) {
+        if (
+          chat.isGroupChat === false &&
+          chat.members.some((member) => member._id === userId)
+        ) {
+          setSearch("");
+          chat.members.filter((e) => {
+            if (e._id !== you._id) {
+              dispatch(
+                selectedChat({
+                  id: chat._id,
+                  detail: e,
+                  isChatGroup: false,
+                })
+              );
+            }
+          });
+          break;
+        } else {
+          setSearch("");
+          const { data } = await axios.post(`${url}/chat`, { userId }, config);
+          data.members.filter((e) => {
+            if (e._id !== you._id) {
+              dispatch(
+                selectedChat({
+                  id: data._id,
+                  detail: e,
+                  isChatGroup: false,
+                })
+              );
+            }
+          });
+          setChatList([data, ...chatList]);
+        }
       }
+    } else {
+      setSearch("");
+      const { data } = await axios.post(`${url}/chat`, { userId }, config);
+      data.members.filter((e) => {
+        if (e._id !== you._id) {
+          dispatch(
+            selectedChat({
+              id: data._id,
+              detail: e,
+              isChatGroup: false,
+            })
+          );
+        }
+      });
+      setChatList([data, ...chatList]);
     }
   }
   //create group
@@ -225,94 +242,89 @@ const Contacts = () => {
         }`}
       >
         <h1 className="text-3xl font-semibold">Chats</h1>
-        <div className="flex items-center gap-3">
-          <Bell className="cursor-pointer" />
-          <Menu>
-            <MenuHandler>
-              <MoreVertical className="cursor-pointer" />
-            </MenuHandler>
-            <MenuList
-              className={`${theme ? "bg-[#131312] text-gray-400" : ""}`}
+        <Menu>
+          <MenuHandler>
+            <MoreVertical className="cursor-pointer" />
+          </MenuHandler>
+          <MenuList className={`${theme ? "bg-[#131312] text-gray-400" : ""}`}>
+            <MenuItem className="flex items-center gap-2">
+              <UserRound />
+              <p className="text-lg">Profile</p>
+            </MenuItem>
+            <MenuItem
+              className="flex items-center gap-2"
+              onClick={() => handleOpen()}
             >
-              <MenuItem className="flex items-center gap-2">
-                <UserRound />
-                <p className="text-lg">Profile</p>
-              </MenuItem>
-              <MenuItem
-                className="flex items-center gap-2"
-                onClick={() => handleOpen()}
-              >
-                <UsersRound />
-                <p className="text-lg">Create Group</p>
-              </MenuItem>
-              <MenuItem
-                className="flex items-center gap-2"
-                onClick={() => dispatch(toggleTheme())}
-              >
-                {theme ? <Moon /> : <Sun />}
-                <p className="text-lg">Theme</p>
-              </MenuItem>
-              <MenuItem
-                className="flex items-center gap-2"
-                onClick={() => {
-                  socket.emit("logout", you._id);
-                  dispatch(notSelectedChat());
-                  dispatch(logout());
-                }}
-              >
-                <LogOut />
-                <p className="text-lg">Logout</p>
-              </MenuItem>
-            </MenuList>
-          </Menu>
-          <Dialog
-            open={open}
-            size="sm"
-            handler={handleOpen}
-            className={`border ${theme ? "bg-[#131312]" : ""}`}
-          >
-            <DialogHeader className={`${theme ? "text-white" : ""}`}>
-              Create Group
-            </DialogHeader>
-            <DialogBody className="flex flex-col gap-3.5">
-              <div className="flex flex-col md:flex-row md:items-center justify-start gap-4 ">
-                <label htmlFor="file" className="cursor-pointer">
-                  <Avatar
-                    size="lg"
-                    src="https://i.ibb.co/0hvhdRK/240-F-686603587-bo-Vdde3-U00-AMRWSVIMnz3-Gu-UBAouyued0.jpg"
-                  />
-                </label>
-                <input type="file" style={{ display: "none" }} id="file" />
-                <input
-                  type="text"
-                  className={`border p-2 rounded-md w-full md:w-[85%] ${
-                    theme
-                      ? "text-white placeholder:text-gray-400"
-                      : "border-gray-900 text-black placeholder:text-gray-600"
-                  } bg-transparent`}
-                  placeholder="Enter Group Name"
-                  onChange={(e) => setGroupName(e.target.value)}
+              <UsersRound />
+              <p className="text-lg">Create Group</p>
+            </MenuItem>
+            <MenuItem
+              className="flex items-center gap-2"
+              onClick={() => dispatch(toggleTheme())}
+            >
+              {theme ? <Moon /> : <Sun />}
+              <p className="text-lg">Theme</p>
+            </MenuItem>
+            <MenuItem
+              className="flex items-center gap-2"
+              onClick={() => {
+                socket.emit("logout", you._id);
+                dispatch(notSelectedChat());
+                dispatch(logout());
+              }}
+            >
+              <LogOut />
+              <p className="text-lg">Logout</p>
+            </MenuItem>
+          </MenuList>
+        </Menu>
+        <Dialog
+          open={open}
+          size="sm"
+          handler={handleOpen}
+          className={`border ${theme ? "bg-[#131312]" : ""}`}
+        >
+          <DialogHeader className={`${theme ? "text-white" : ""}`}>
+            Create Group
+          </DialogHeader>
+          <DialogBody className="flex flex-col gap-3.5">
+            <div className="flex flex-col md:flex-row md:items-center justify-start gap-4 ">
+              <label htmlFor="file" className="cursor-pointer">
+                <Avatar
+                  size="lg"
+                  src="https://i.ibb.co/0hvhdRK/240-F-686603587-bo-Vdde3-U00-AMRWSVIMnz3-Gu-UBAouyued0.jpg"
                 />
-              </div>
-              <MultiSelect
-                onMembersSelect={(members) => setSelectedMembers(members)}
+              </label>
+              <input type="file" style={{ display: "none" }} id="file" />
+              <input
+                type="text"
+                className={`border p-2 rounded-md w-full md:w-[85%] ${
+                  theme
+                    ? "text-white placeholder:text-gray-400"
+                    : "border-gray-900 text-black placeholder:text-gray-600"
+                } bg-transparent`}
+                placeholder="Enter Group Name"
+                onChange={(e) => setGroupName(e.target.value)}
               />
-            </DialogBody>
-            <DialogFooter>
-              <Button
-                variant="text"
-                color="red"
-                onClick={handleOpen}
-                className="mr-1"
-              >
-                <span>Cancel</span>
-              </Button>
-              <Button variant="gradient" color="green" onClick={createGroup}>
-                <span>Create Group</span>
-              </Button>
-            </DialogFooter>
-          </Dialog>
-        </div>
+            </div>
+            <MultiSelect
+              onMembersSelect={(members) => setSelectedMembers(members)}
+            />
+          </DialogBody>
+          <DialogFooter>
+            <Button
+              variant="text"
+              color="red"
+              onClick={handleOpen}
+              className="mr-1"
+            >
+              <span>Cancel</span>
+            </Button>
+            <Button variant="gradient" color="green" onClick={createGroup}>
+              <span>Create Group</span>
+            </Button>
+          </DialogFooter>
+        </Dialog>
       </div>
       {/* searchInput */}
       <>

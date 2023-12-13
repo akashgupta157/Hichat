@@ -145,6 +145,10 @@ const Messages = () => {
     setMessageInput(messageInput + emoji);
   };
   // todo emoji ⮥
+  const [file, setFile] = useState();
+  useEffect(() => {
+    console.log(file)
+  }, [file]);
   return (
     <div className={`message h-full ${theme ? "bg-[#131312]" : "bg-white"}`}>
       {selectChat.isChatSelected ? (
@@ -314,7 +318,7 @@ const Messages = () => {
                   type="file"
                   style={{ display: "none" }}
                   id="file"
-                  // onChange={(e) => onFileChange(e)}
+                  onChange={(e) => setFile(e.target.files[0])}
                 />
                 <input
                   type="text"
