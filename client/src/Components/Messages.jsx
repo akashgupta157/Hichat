@@ -41,13 +41,15 @@ const Messages = () => {
   const [allMessages, setAllMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const messagesContainerRef = useRef(null);
+  // TODO scroll to down ⮧
   useEffect(() => {
     if (messagesContainerRef.current) {
       messagesContainerRef.current.scrollTop =
         messagesContainerRef.current.scrollHeight;
     }
   }, [allMessages, selectChat]);
-  // TODO socket.io
+  // TODO scroll to down ⮥
+  // TODO socket.io ⮧
   // connect to socket
   const [socketConnection, setSocketConnection] = useState(false);
   useEffect(() => {
@@ -83,8 +85,9 @@ const Messages = () => {
       }
     });
   });
+  // TODO socket.io ⮥
+  // TODO send msg ⮧
   const sendMsg = () => {
-    // TODO send msg
     if (messageInput.length > 0) {
       axios
         .post(
@@ -101,8 +104,9 @@ const Messages = () => {
         });
     }
   };
+  // TODO send msg ⮥
+  // todo fetch All Messages ⮧
   useEffect(() => {
-    // todo fetch All Messages
     (async function () {
       if (selectChat.isChatSelected) {
         setLoading(true);
@@ -116,9 +120,11 @@ const Messages = () => {
       }
     })();
     selectedChatCompare = selectChat;
+    setMessageInput("");
   }, [selectChat]);
+  // todo fetch All Messages ⮥
+  // todo segregate chats by date ⮧
   const groupMessagesByDate = (messages) => {
-    // todo segregate chats by date
     const groupedMessages = {};
     messages.forEach((msg) => {
       const dateKey = new Date(msg.createdAt).toDateString();
@@ -129,6 +135,8 @@ const Messages = () => {
     });
     return groupedMessages;
   };
+  // todo segregate chats by date ⮥
+  // todo emoji ⮧
   const addEmoji = (e) => {
     const sym = e.unified.split("_");
     const cA = [];
@@ -136,6 +144,7 @@ const Messages = () => {
     let emoji = String.fromCodePoint(...cA);
     setMessageInput(messageInput + emoji);
   };
+  // todo emoji ⮥
   return (
     <div className={`message h-full ${theme ? "bg-[#131312]" : "bg-white"}`}>
       {selectChat.isChatSelected ? (

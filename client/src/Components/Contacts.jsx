@@ -32,7 +32,8 @@ import { logout } from "../Redux/Auth/action";
 import MultiSelect from "./MultiSelect";
 import io from "socket.io-client";
 import AvataR from "./AvataR";
-var socket;
+import messageSound from "../assets/messageSound.mp3";
+var socket, selectedChatCompare;
 const Contacts = () => {
   const theme = useSelector((state) => state.theme.isDarkMode);
   const you = useSelector((state) => state.auth.user);
@@ -46,6 +47,7 @@ const Contacts = () => {
   const [searchLoading, setSearchLoading] = useState(false);
   const [listLoading, setListLoading] = useState(true);
   const [chatList, setChatList] = useState([]);
+  // TODO socket.io ⮧
   const [socketConnection, setSocketConnection] = useState(false);
   useEffect(() => {
     socket = io(url);
@@ -64,22 +66,51 @@ const Contacts = () => {
       socket.off("online users");
     };
   }, []);
+  const removeDuplicates = (array, key) => {
+    const seen = new Set();
+    return array.filter((item) => {
+      const itemKey = key ? item[key] : JSON.stringify(item);
+      if (!seen.has(itemKey)) {
+        seen.add(itemKey);
+        return true;
+      }
+      return false;
+    });
+  };
+  const [notifyChats, setNotifyChats] = useState([]);
   useEffect(() => {
     socket.on("message received", (newMessage) => {
-      chatList.filter((chat, i) => {
+      chatList.filter((chat) => {
         if (chat._id === newMessage.chat._id) {
           chat.latestMessage.content = newMessage.content;
           chat.updatedAt = newMessage.updatedAt;
           chat.latestMessage.sender = newMessage.sender;
-          chatList.splice(i, 1);
-          setChatList([chat, ...chatList]);
+          const uniqueArray = removeDuplicates([chat, ...chatList], "_id");
+          setChatList(uniqueArray);
+          if (selectedChatCompare.data.id !== newMessage.chat._id) {
+            const sound = new Audio(messageSound);
+            sound.play();
+            setNotifyChats([chat._id, ...notifyChats]);
+          }
         }
       });
     });
   });
+  useEffect(() => {
+    selectedChatCompare = selectChat;
+    let newArray = notifyChats.filter((e) => e !== selectedChatCompare.data.id);
+    setNotifyChats(newArray);
+  }, [selectChat]);
   const isUserOnline = (userId) => {
     return onlineUsers.includes(userId);
   };
+  useEffect(() => {
+    window.addEventListener("beforeunload", () => {
+      socket.emit("logout", you._id);
+    });
+  }, []);
+  // TODO socket.io ⮥
+  // TODO search ⮧
   useEffect(() => {
     const fetchResults = async () => {
       try {
@@ -104,6 +135,7 @@ const Contacts = () => {
     }, 500);
     return () => clearTimeout(debounceTimer);
   }, [search]);
+  // TODO search ⮥
   useEffect(() => {
     const fetchList = async () => {
       setListLoading(true);
@@ -178,6 +210,13 @@ const Contacts = () => {
       handleOpen();
     }
   };
+  function countOccurrences(arr, target) {
+    const count = arr.reduce(
+      (acc, current) => (current === target ? acc + 1 : acc),
+      0
+    );
+    return count;
+  }
   return (
     <div className={`contact h-full ${theme ? "bg-[#131312]" : "bg-white"}`}>
       <div
@@ -417,15 +456,22 @@ const Contacts = () => {
                       />
                     )}
                     <div>
-                      <h2
-                        className={`font-bold text-base	${
-                          theme ? "text-white" : "text-black"
-                        }`}
-                      >
-                        {chatName.isGroupChat
-                          ? chatName.chatName
-                          : chatName.name}
-                      </h2>
+                      <div className="flex items-center gap-2">
+                        <h2
+                          className={`font-bold text-base	${
+                            theme ? "text-white" : "text-black"
+                          }`}
+                        >
+                          {chatName.isGroupChat
+                            ? chatName.chatName
+                            : chatName.name}
+                        </h2>
+                        {notifyChats.includes(item._id) ? (
+                          <p className=" flex justify-center items-center w-4 h-4 rounded-full bg-red-600 text-white text-xs">
+                            {countOccurrences(notifyChats, item._id)}
+                          </p>
+                        ) : null}
+                      </div>
                       <p
                         className={`text-sm	${
                           theme ? "text-white" : "text-black"
@@ -477,15 +523,22 @@ const Contacts = () => {
                       />
                     )}
                     <div>
-                      <h2
-                        className={`font-bold text-base	${
-                          theme ? "text-white" : "text-black"
-                        }`}
-                      >
-                        {chatName.isGroupChat
-                          ? chatName.chatName
-                          : chatName.name}
-                      </h2>
+                      <div className="flex items-center gap-2">
+                        <h2
+                          className={`font-bold text-base	${
+                            theme ? "text-white" : "text-black"
+                          }`}
+                        >
+                          {chatName.isGroupChat
+                            ? chatName.chatName
+                            : chatName.name}
+                        </h2>
+                        {notifyChats.includes(item._id) ? (
+                          <p className=" flex justify-center items-center w-4 h-4 rounded-full bg-red-600 text-white text-xs">
+                            {countOccurrences(notifyChats, item._id)}
+                          </p>
+                        ) : null}
+                      </div>
                       <p
                         className={`text-sm	${
                           theme ? "text-white" : "text-black"
