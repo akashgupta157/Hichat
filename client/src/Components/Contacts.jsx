@@ -68,7 +68,6 @@ const Contacts = () => {
     socket.on("message received", (newMessage) => {
       chatList.filter((chat, i) => {
         if (chat._id === newMessage.chat._id) {
-          // console.log(chat)
           chat.latestMessage.content = newMessage.content;
           chat.updatedAt = newMessage.updatedAt;
           chat.latestMessage.sender = newMessage.sender;
