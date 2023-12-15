@@ -268,6 +268,7 @@ const Contacts = () => {
             <MenuItem
               className="flex items-center gap-2"
               onClick={() => {
+                sessionStorage.clear();
                 socket.emit("logout", you._id);
                 dispatch(notSelectedChat());
                 dispatch(logout());
