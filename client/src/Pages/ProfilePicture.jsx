@@ -1,19 +1,55 @@
 import { Button } from "@material-tailwind/react";
 import React, { useState, useRef } from "react";
+import { url } from "../Components/misc";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import { login } from "../Redux/Auth/action";
 const ProfilePicture = () => {
+  const user = JSON.parse(sessionStorage.getItem("user"));
+  const { id } = useParams();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   let img =
     "https://t3.ftcdn.net/jpg/05/53/79/60/360_F_553796090_XHrE6R9jwmBJUMo9HKl41hyHJ5gqt9oz.jpg";
   const [image, setImage] = useState(img);
   const isDeleteDisabled = image === img;
   const fileInputRef = useRef(null);
-  const handleImageChange = (event) => {
+  const handleImageChange = async (event) => {
     const selectedImage = event.target.files[0];
     if (selectedImage) {
       const reader = new FileReader();
       reader.onload = () => {
         setImage(reader.result);
       };
-      reader.readAsDataURL(selectedImage)
+      reader.readAsDataURL(selectedImage);
+      const Data = new FormData();
+      Data.append("name", selectedImage.name);
+      Data.append("file", selectedImage);
+      const { data } = await axios.patch(
+        `${url}/auth/updateProfile/${id}`,
+        Data
+      );
+      if (data.message == "done") {
+        sessionStorage.getItem(
+          "user",
+          JSON.stringify({ ...user, profilePicture: data.imageUrl })
+        );
+        dispatch(login({ ...user, profilePicture: data.imageUrl }));
+        navigate("/chats");
+      } else {
+        toast.error(`${data.message}`, {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      }
     }
   };
   const handleButtonClick = () => {
@@ -33,7 +69,7 @@ const ProfilePicture = () => {
           <Button onClick={handleButtonClick}>Change</Button>
           <input
             type="file"
-            style={{ display: "none" }}
+            className="hidden"
             ref={fileInputRef}
             onChange={handleImageChange}
             accept="image/*"
@@ -46,6 +82,9 @@ const ProfilePicture = () => {
             Delete
           </Button>
         </div>
+        <button className="float-right mt-5">
+          <Link to={"/chats"}>Skip</Link>
+        </button>
       </div>
     </div>
   );

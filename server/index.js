@@ -6,11 +6,13 @@ const userMiddleware = require("./middlewares/user.middleware");
 const userRoute = require("./routes/user.route");
 const chatRoute = require("./routes/chats.route");
 const messageRoute = require("./routes/messages.route");
+const fileRoute = require("./routes/upload.route");
 app.use(express.json());
 app.use(cors());
 app.use("/auth", userRoute);
 app.use("/chat", userMiddleware, chatRoute);
 app.use("/message", userMiddleware, messageRoute);
+app.use("/file", fileRoute);
 const server = app.listen(3000, async () => {
   try {
     await connection;

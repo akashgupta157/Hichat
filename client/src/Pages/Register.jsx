@@ -46,8 +46,13 @@ const Register = () => {
         progress: undefined,
         theme: "colored",
       });
+      sessionStorage.setItem(
+        "user",
+        JSON.stringify({ ...data.user, token: data.token })
+      );
+      dispatch(login({ ...data.user, token: data.token }));
       setTimeout(() => {
-        navigate(`/profilePicture/${data.id}`);
+        navigate(`/profilePicture/${data.user._id}`);
       }, 2000);
     } else {
       toast.error(`${data.message}`, {

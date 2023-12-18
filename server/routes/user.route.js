@@ -2,10 +2,10 @@ require("dotenv").config();
 const router = require("express").Router();
 const bcrypt = require("bcrypt");
 const userModel = require("../models/user.model");
-const chatModel = require("../models/chat.model");
 const jwt = require("jsonwebtoken");
 const axios = require("axios");
 const userMiddleware = require("../middlewares/user.middleware");
+const uploadMiddleware = require("../middlewares/upload.middleware");
 router.get("/", async (req, res) => {
   try {
     res.send("Welcome User");
@@ -31,10 +31,7 @@ router.post("/google/login", async (req, res) => {
   if (existingUser) {
     const token = jwt.sign(
       { userId: existingUser._id, user: existingUser.email },
-      process.env.secretKey,
-      {
-        expiresIn: "24h",
-      }
+      process.env.secretKey
     );
     return res.json({ user: existingUser, token });
   }
@@ -70,10 +67,15 @@ router.post("/register", async (req, res) => {
       } else {
         const user = new userModel({ ...req.body, password: hash });
         const data = await user.save();
+        const token = jwt.sign(
+          { userId: data._id, user: data.email },
+          process.env.secretKey
+        );
         res.json({
           message: "User has been Registered successfully",
           auth: true,
-          id: data._id,
+          user: data,
+          token,
         });
       }
     });
@@ -94,28 +96,30 @@ router.post("/login", async (req, res) => {
     }
     const token = jwt.sign(
       { userId: user._id, user: user.email },
-      process.env.secretKey,
-      {
-        expiresIn: "24h",
-      }
+      process.env.secretKey
     );
     res.json({ message: "Login successful", user, token, auth: true });
   } catch (error) {
     res.json({ message: error.message });
   }
 });
-router.patch("/updateProfile/:id", async (req, res) => {
-  try {
-    const userId = req.params.id;
-    const { profilePicture } = req.body;
-    const existingUser = await userModel.findById(userId);
-    existingUser.profilePicture = profilePicture || existingUser.profilePicture;
-    await existingUser.save();
-    res.json({ message: "done" });
-  } catch (error) {
-    res.json({ message: error.message });
+router.patch(
+  "/updateProfile/:id",
+  uploadMiddleware.single("file"),
+  async (req, res) => {
+    try {
+      const userId = req.params.id;
+      const url = "http://localhost:3000";
+      const imageUrl = `${url}/file/${req.file.filename}`;
+      const existingUser = await userModel.findById(userId);
+      existingUser.profilePicture = imageUrl || existingUser.profilePicture;
+      await existingUser.save();
+      res.json({ message: "done", imageUrl });
+    } catch (error) {
+      res.json({ message: error.message });
+    }
   }
-});
+);
 router.get("/search", userMiddleware, async (req, res) => {
   const search = req.query.search
     ? {
@@ -129,7 +133,7 @@ router.get("/search", userMiddleware, async (req, res) => {
           },
         ],
       }
-    : {};
+    : null;
   res.send(
     await userModel
       .find(search)
