@@ -75,6 +75,7 @@ router.post("/group", async (req, res) => {
       members,
       isGroupChat: true,
       groupAdmin: req.user.userId,
+      groupPicture: req.body.groupPicture,
     });
     const wholeGroupChat = await chatModel
       .findOne({ _id: groupChat._id })

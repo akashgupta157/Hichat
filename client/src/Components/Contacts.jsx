@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  Bell,
   Search,
   Loader2,
   MoreVertical,
@@ -200,8 +199,30 @@ const Contacts = () => {
     }
   }
   //create group
+  const [image, setImage] = useState(
+    "https://i.ibb.co/0hvhdRK/240-F-686603587-bo-Vdde3-U00-AMRWSVIMnz3-Gu-UBAouyued0.jpg"
+  );
   const [groupName, setGroupName] = useState("");
   const [selectedMembers, setSelectedMembers] = useState([]);
+  const [imgUrl, setImgUrl] = useState(
+    "https://i.ibb.co/0hvhdRK/240-F-686603587-bo-Vdde3-U00-AMRWSVIMnz3-Gu-UBAouyued0.jpg"
+  );
+  const handleImageChange = async (event) => {
+    const selectedImage = event.target.files[0];
+    if (selectedImage) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setImage(reader.result);
+      };
+      reader.readAsDataURL(selectedImage);
+      const Data = new FormData();
+      Data.append("name", selectedImage.name);
+      Data.append("file", selectedImage);
+      const { data } = await axios.post(`${url}/file/upload`, Data);
+      setImgUrl(data.imageUrl);
+    }
+  };
+  console.log(imgUrl);
   const createGroup = async () => {
     if (groupName?.length === 0) {
       alert("Please Enter Group Name");
@@ -213,6 +234,7 @@ const Contacts = () => {
         {
           name: groupName,
           members: selectedMembers,
+          groupPicture: imgUrl,
         },
         config
       );
@@ -291,12 +313,14 @@ const Contacts = () => {
           <DialogBody className="flex flex-col gap-3.5">
             <div className="flex flex-col md:flex-row md:items-center justify-start gap-4 ">
               <label htmlFor="file" className="cursor-pointer">
-                <Avatar
-                  size="lg"
-                  src="https://i.ibb.co/0hvhdRK/240-F-686603587-bo-Vdde3-U00-AMRWSVIMnz3-Gu-UBAouyued0.jpg"
-                />
+                <Avatar size="lg" src={image} />
               </label>
-              <input type="file" style={{ display: "none" }} id="file" />
+              <input
+                type="file"
+                style={{ display: "none" }}
+                id="file"
+                onChange={handleImageChange}
+              />
               <input
                 type="text"
                 className={`border p-2 rounded-md w-full md:w-[85%] ${
