@@ -69,10 +69,11 @@ router.post("/register", async (req, res) => {
         res.json({ err: err.message });
       } else {
         const user = new userModel({ ...req.body, password: hash });
-        await user.save();
+        const data = await user.save();
         res.json({
           message: "User has been Registered successfully",
           auth: true,
+          id: data._id,
         });
       }
     });
@@ -99,6 +100,18 @@ router.post("/login", async (req, res) => {
       }
     );
     res.json({ message: "Login successful", user, token, auth: true });
+  } catch (error) {
+    res.json({ message: error.message });
+  }
+});
+router.patch("/updateProfile/:id", async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const { profilePicture } = req.body;
+    const existingUser = await userModel.findById(userId);
+    existingUser.profilePicture = profilePicture || existingUser.profilePicture;
+    await existingUser.save();
+    res.json({ message: "done" });
   } catch (error) {
     res.json({ message: error.message });
   }

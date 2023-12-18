@@ -47,7 +47,7 @@ const Register = () => {
         theme: "colored",
       });
       setTimeout(() => {
-        navigate("/");
+        navigate(`/profilePicture/${data.id}`);
       }, 2000);
     } else {
       toast.error(`${data.message}`, {

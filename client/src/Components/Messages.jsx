@@ -16,8 +16,8 @@ import {
   Video,
   MoreHorizontal,
   Smile,
-  Paperclip,
   Send,
+  Paperclip,
   X,
   ArrowLeft,
   Loader2,
@@ -145,10 +145,6 @@ const Messages = () => {
     setMessageInput(messageInput + emoji);
   };
   // todo emoji ⮥
-  const [file, setFile] = useState();
-  useEffect(() => {
-    console.log(file)
-  }, [file]);
   return (
     <div className={`message h-full ${theme ? "bg-[#131312]" : "bg-white"}`}>
       {selectChat.isChatSelected ? (
@@ -311,15 +307,7 @@ const Messages = () => {
                     <Picker data={data} onEmojiSelect={addEmoji} />
                   </MenuList>
                 </Menu>
-                <label htmlFor="file" className="flex items-center">
-                  <Paperclip cursor={"pointer"} size={"20px"} />
-                </label>
-                <input
-                  type="file"
-                  style={{ display: "none" }}
-                  id="file"
-                  onChange={(e) => setFile(e.target.files[0])}
-                />
+                <Paperclip cursor={"pointer"} />
                 <input
                   type="text"
                   required
@@ -337,7 +325,6 @@ const Messages = () => {
               </div>
               <IconButton
                 type="submit"
-                // disabled={loadingFile}
                 className="bg-[#000000]"
                 onClick={() => {
                   sendMsg();
