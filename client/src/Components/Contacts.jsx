@@ -3,8 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   Search,
   Loader2,
-  MoreVertical,
-  UserRound,
+  ChevronDown,
   UsersRound,
   LogOut,
   Sun,
@@ -31,7 +30,6 @@ import { logout } from "../Redux/Auth/action";
 import MultiSelect from "./MultiSelect";
 import io from "socket.io-client";
 import AvataR from "./AvataR";
-import messageSound from "../assets/messageSound.mp3";
 var socket, selectedChatCompare;
 const Contacts = () => {
   const theme = useSelector((state) => state.theme.isDarkMode);
@@ -41,7 +39,7 @@ const Contacts = () => {
   const config = configure(you.token);
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(!open);
-  const [search, setSearch] = useState();
+  const [search, setSearch] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [searchLoading, setSearchLoading] = useState(false);
   const [listLoading, setListLoading] = useState(true);
@@ -65,6 +63,9 @@ const Contacts = () => {
       socket.off("online users");
     };
   }, []);
+  const isUserOnline = (userId) => {
+    return onlineUsers.includes(userId);
+  };
   const removeDuplicates = (array, key) => {
     const seen = new Set();
     return array.filter((item) => {
@@ -87,8 +88,6 @@ const Contacts = () => {
           const uniqueArray = removeDuplicates([chat, ...chatList], "_id");
           setChatList(uniqueArray);
           if (selectedChatCompare.data?.id !== newMessage.chat._id) {
-            const sound = new Audio(messageSound);
-            sound.play();
             setNotifyChats([chat._id, ...notifyChats]);
           }
         }
@@ -100,9 +99,6 @@ const Contacts = () => {
     let newArray = notifyChats.filter((e) => e !== selectedChatCompare.data.id);
     setNotifyChats(newArray);
   }, [selectChat]);
-  const isUserOnline = (userId) => {
-    return onlineUsers.includes(userId);
-  };
   useEffect(() => {
     window.addEventListener("beforeunload", () => {
       socket.emit("logout", you._id);
@@ -264,43 +260,44 @@ const Contacts = () => {
         }`}
       >
         <h1 className="text-3xl font-semibold">Chats</h1>
-        <Menu>
-          <MenuHandler>
-            <MoreVertical className="cursor-pointer" />
-          </MenuHandler>
-          <MenuList className={`${theme ? "bg-[#131312] text-gray-400" : ""}`}>
-            <MenuItem className="flex items-center gap-2">
-              <UserRound />
-              <p className="text-lg">Profile</p>
-            </MenuItem>
-            <MenuItem
-              className="flex items-center gap-2"
-              onClick={() => handleOpen()}
+        <div className="flex gap-3 items-center">
+          <Avatar src={you.profilePicture} />
+          <Menu>
+            <MenuHandler>
+              <ChevronDown className="cursor-pointer" />
+            </MenuHandler>
+            <MenuList
+              className={`${theme ? "bg-[#131312] text-gray-400" : ""}`}
             >
-              <UsersRound />
-              <p className="text-lg">Create Group</p>
-            </MenuItem>
-            <MenuItem
-              className="flex items-center gap-2"
-              onClick={() => dispatch(toggleTheme())}
-            >
-              {theme ? <Moon /> : <Sun />}
-              <p className="text-lg">Theme</p>
-            </MenuItem>
-            <MenuItem
-              className="flex items-center gap-2"
-              onClick={() => {
-                sessionStorage.clear();
-                socket.emit("logout", you._id);
-                dispatch(notSelectedChat());
-                dispatch(logout());
-              }}
-            >
-              <LogOut />
-              <p className="text-lg">Logout</p>
-            </MenuItem>
-          </MenuList>
-        </Menu>
+              <MenuItem
+                className="flex items-center gap-2"
+                onClick={() => handleOpen()}
+              >
+                <UsersRound />
+                <p className="text-lg">Create Group</p>
+              </MenuItem>
+              <MenuItem
+                className="flex items-center gap-2"
+                onClick={() => dispatch(toggleTheme())}
+              >
+                {theme ? <Moon /> : <Sun />}
+                <p className="text-lg">Theme</p>
+              </MenuItem>
+              <MenuItem
+                className="flex items-center gap-2"
+                onClick={() => {
+                  sessionStorage.clear();
+                  socket.emit("logout", you._id);
+                  dispatch(notSelectedChat());
+                  dispatch(logout());
+                }}
+              >
+                <LogOut />
+                <p className="text-lg">Logout</p>
+              </MenuItem>
+            </MenuList>
+          </Menu>
+        </div>
         <Dialog
           open={open}
           size="sm"
@@ -375,56 +372,6 @@ const Contacts = () => {
             className="last:w-full bg-transparent outline-none"
           />
         </label>
-        <div className="relative">
-          {searchResults.length > 0 ? (
-            <div
-              className={`absolute w-full z-10 mt-1 shadow-2xl px-5 py-2 rounded-lg ${
-                theme ? "bg-[#222222]" : "bg-white"
-              }`}
-            >
-              <div
-                className={`flex flex-col gap-1 max-h-[110px] ${
-                  searchResults.length > 3 ? "overflow-scroll" : ""
-                } overflow-x-hidden`}
-              >
-                {searchResults.map((item, i) => (
-                  <div
-                    key={i}
-                    className={`flex gap-3 p-2 rounded-xl items-center cursor-pointer ${
-                      theme ? "hover:bg-[#4c4d52]" : "hover:bg-[#d6d6d7]"
-                    }`}
-                    onClick={() => {
-                      addChatList(item._id);
-                    }}
-                  >
-                    <Avatar src={item.profilePicture} size="sm" />
-                    <div>
-                      <p className={`${theme ? "text-white" : "text-black"}`}>
-                        {item.name}
-                      </p>
-                      <small
-                        className={`${theme ? "text-white" : "text-black"}`}
-                      >
-                        {item.email}
-                      </small>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ) : searchResults.length === 0 && search?.length > 0 ? (
-            <div
-              className={`absolute w-full z-10 mt-2 shadow-2xl px-5 py-2 rounded-lg ${
-                theme ? "bg-[#222222]" : "bg-white"
-              }`}
-            >
-              <p className={`${theme ? "text-white" : "text-black"} py-3`}>
-                {" "}
-                No Results found.
-              </p>
-            </div>
-          ) : null}
-        </div>
       </>
       {/* searchInput */}
       {listLoading ? (
