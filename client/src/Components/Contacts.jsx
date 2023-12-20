@@ -372,6 +372,56 @@ const Contacts = () => {
             className="last:w-full bg-transparent outline-none"
           />
         </label>
+        <div className="relative">
+          {searchResults.length > 0 ? (
+            <div
+              className={`absolute w-full z-10 mt-1 shadow-2xl px-5 py-2 rounded-lg ${
+                theme ? "bg-[#222222]" : "bg-white"
+              }`}
+            >
+              <div
+                className={`flex flex-col gap-1 max-h-[110px] ${
+                  searchResults.length > 3 ? "overflow-scroll" : ""
+                } overflow-x-hidden`}
+              >
+                {searchResults.map((item, i) => (
+                  <div
+                    key={i}
+                    className={`flex gap-3 p-2 rounded-xl items-center cursor-pointer ${
+                      theme ? "hover:bg-[#4c4d52]" : "hover:bg-[#d6d6d7]"
+                    }`}
+                    onClick={() => {
+                      addChatList(item._id);
+                    }}
+                  >
+                    <Avatar src={item.profilePicture} size="sm" />
+                    <div>
+                      <p className={`${theme ? "text-white" : "text-black"}`}>
+                        {item.name}
+                      </p>
+                      <small
+                        className={`${theme ? "text-white" : "text-black"}`}
+                      >
+                        {item.email}
+                      </small>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : searchResults.length === 0 && search?.length > 0 ? (
+            <div
+              className={`absolute w-full z-10 mt-2 shadow-2xl px-5 py-2 rounded-lg ${
+                theme ? "bg-[#222222]" : "bg-white"
+              }`}
+            >
+              <p className={`${theme ? "text-white" : "text-black"} py-3`}>
+                {" "}
+                No Results found.
+              </p>
+            </div>
+          ) : null}
+        </div>
       </>
       {/* searchInput */}
       {listLoading ? (
