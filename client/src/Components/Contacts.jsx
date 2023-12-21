@@ -20,7 +20,6 @@ import {
   DialogBody,
   DialogFooter,
   Button,
-  Input,
 } from "@material-tailwind/react";
 import { configure, formatDateTime, url } from "./misc";
 import axios from "axios";
@@ -30,6 +29,7 @@ import { logout } from "../Redux/Auth/action";
 import MultiSelect from "./MultiSelect";
 import io from "socket.io-client";
 import AvataR from "./AvataR";
+import livechat from "../assets/livechat.mp3";
 var socket, selectedChatCompare;
 const Contacts = () => {
   const theme = useSelector((state) => state.theme.isDarkMode);
@@ -79,31 +79,23 @@ const Contacts = () => {
   };
   const [notifyChats, setNotifyChats] = useState([]);
   const [newMsg, setNewMsg] = useState();
+  const notificationAudio = new Audio(livechat);
   useEffect(() => {
     if (newMsg !== undefined) {
       const isNewChat = chatList?.every((chat) => chat._id !== newMsg.chat._id);
+      const updatedChat = {
+        ...newMsg.chat,
+        latestMessage: {
+          content: newMsg.content,
+          sender: newMsg.sender,
+          updatedAt: newMsg.updatedAt,
+        },
+      };
       if (isNewChat) {
         setNotifyChats([newMsg.chat._id, ...notifyChats]);
-        setChatList([
-          {
-            ...newMsg.chat,
-            latestMessage: {
-              content: newMsg.content,
-              sender: newMsg.sender,
-              updatedAt: newMsg.updatedAt,
-            },
-          },
-          ...chatList,
-        ]);
+        setChatList([updatedChat, ...chatList]);
+        notificationAudio.play();
       } else {
-        const updatedChat = {
-          ...newMsg.chat,
-          latestMessage: {
-            content: newMsg.content,
-            sender: newMsg.sender,
-            updatedAt: newMsg.updatedAt,
-          },
-        };
         if (
           !selectedChatCompare.isChatSelected ||
           selectedChatCompare.data.id !== newMsg.chat._id
@@ -112,6 +104,7 @@ const Contacts = () => {
           setChatList((prevChatList) =>
             removeDuplicates([updatedChat, ...prevChatList], "_id")
           );
+          notificationAudio.play();
         }
       }
     }

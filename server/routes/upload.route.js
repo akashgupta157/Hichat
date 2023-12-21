@@ -4,6 +4,7 @@ const grid = require("gridfs-stream");
 const mongoose = require("mongoose");
 const uploadMiddleware = require("../middlewares/upload.middleware");
 const conn = mongoose.connection;
+const url = require("../index");
 let gfs;
 conn.once("open", () => {
   gridFsBucket = new mongoose.mongo.GridFSBucket(conn.db, {
@@ -23,7 +24,6 @@ router.get("/:fileName", async (req, res) => {
 });
 router.post("/upload", uploadMiddleware.single("file"), async (req, res) => {
   try {
-    const url = "http://localhost:3000";
     const imageUrl = `${url}/file/${req.file.filename}`;
     res.json({ imageUrl });
   } catch (error) {
