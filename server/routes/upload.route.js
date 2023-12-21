@@ -4,7 +4,6 @@ const grid = require("gridfs-stream");
 const mongoose = require("mongoose");
 const uploadMiddleware = require("../middlewares/upload.middleware");
 const conn = mongoose.connection;
-const url = require("../index");
 let gfs;
 conn.once("open", () => {
   gridFsBucket = new mongoose.mongo.GridFSBucket(conn.db, {
@@ -24,7 +23,7 @@ router.get("/:fileName", async (req, res) => {
 });
 router.post("/upload", uploadMiddleware.single("file"), async (req, res) => {
   try {
-    const imageUrl = `${url}/file/${req.file.filename}`;
+    const imageUrl = `https://hichat-fn3r.onrender.com/file/${req.file.filename}`;
     res.json({ imageUrl });
   } catch (error) {
     res.json({ message: error.message });

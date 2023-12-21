@@ -54,5 +54,3 @@ io.on("connection", (socket) => {
     socket.leave(userData._id);
   });
 });
-const url = "https://hichat-fn3r.onrender.com";
-module.exports = url;
