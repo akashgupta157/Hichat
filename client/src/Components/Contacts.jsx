@@ -78,20 +78,47 @@ const Contacts = () => {
     });
   };
   const [notifyChats, setNotifyChats] = useState([]);
+  const [newMsg, setNewMsg] = useState();
+  useEffect(() => {
+    if (newMsg !== undefined) {
+      const isNewChat = chatList?.every((chat) => chat._id !== newMsg.chat._id);
+      if (isNewChat) {
+        setNotifyChats([newMsg.chat._id, ...notifyChats]);
+        setChatList([
+          {
+            ...newMsg.chat,
+            latestMessage: {
+              content: newMsg.content,
+              sender: newMsg.sender,
+              updatedAt: newMsg.updatedAt,
+            },
+          },
+          ...chatList,
+        ]);
+      } else {
+        const updatedChat = {
+          ...newMsg.chat,
+          latestMessage: {
+            content: newMsg.content,
+            sender: newMsg.sender,
+            updatedAt: newMsg.updatedAt,
+          },
+        };
+        if (
+          !selectedChatCompare.isChatSelected ||
+          selectedChatCompare.data.id !== newMsg.chat._id
+        ) {
+          setNotifyChats([newMsg.chat._id, ...notifyChats]);
+          setChatList((prevChatList) =>
+            removeDuplicates([updatedChat, ...prevChatList], "_id")
+          );
+        }
+      }
+    }
+  }, [newMsg]);
   useEffect(() => {
     socket.on("message received", (newMessage) => {
-      chatList.filter((chat) => {
-        if (chat._id === newMessage.chat._id) {
-          chat.latestMessage.content = newMessage.content;
-          chat.updatedAt = newMessage.updatedAt;
-          chat.latestMessage.sender = newMessage.sender;
-          const uniqueArray = removeDuplicates([chat, ...chatList], "_id");
-          setChatList(uniqueArray);
-          if (selectedChatCompare.data?.id !== newMessage.chat._id) {
-            setNotifyChats([chat._id, ...notifyChats]);
-          }
-        }
-      });
+      setNewMsg(newMessage);
     });
   });
   useEffect(() => {
@@ -99,11 +126,6 @@ const Contacts = () => {
     let newArray = notifyChats.filter((e) => e !== selectedChatCompare.data.id);
     setNotifyChats(newArray);
   }, [selectChat]);
-  useEffect(() => {
-    window.addEventListener("beforeunload", () => {
-      socket.emit("logout", you._id);
-    });
-  }, []);
   // TODO socket.io ⮥
   // TODO search ⮧
   useEffect(() => {
@@ -139,6 +161,9 @@ const Contacts = () => {
       setListLoading(false);
     };
     fetchList();
+    window.addEventListener("beforeunload", () => {
+      socket.emit("logout", you._id);
+    });
   }, []);
   async function addChatList(userId) {
     if (chatList.length > 0) {
@@ -218,7 +243,6 @@ const Contacts = () => {
       setImgUrl(data.imageUrl);
     }
   };
-  console.log(imgUrl);
   const createGroup = async () => {
     if (groupName?.length === 0) {
       alert("Please Enter Group Name");
@@ -293,7 +317,7 @@ const Contacts = () => {
                 }}
               >
                 <LogOut />
-                <p className="text-lg">Logout</p>
+                <p className="text-lg">Sign out</p>
               </MenuItem>
             </MenuList>
           </Menu>
@@ -479,7 +503,11 @@ const Contacts = () => {
                 >
                   <div className="flex gap-3">
                     {chatName.isGroupChat ? (
-                      <Avatar src={chatName.groupPicture} alt="" />
+                      <Avatar
+                        src={chatName.groupPicture}
+                        alt=""
+                        loading="lazy"
+                      />
                     ) : (
                       <AvataR
                         src={chatName.profilePicture}

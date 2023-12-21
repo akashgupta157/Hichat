@@ -76,10 +76,10 @@ const Messages = () => {
   useEffect(() => {
     socket.on("message received", (newMessage) => {
       if (
-        !selectedChatCompare ||
+        !selectedChatCompare.isChatSelected ||
         selectedChatCompare.data?.id !== newMessage.chat._id
       ) {
-        //notify
+        null;
       } else {
         setAllMessages([...allMessages, newMessage]);
       }
