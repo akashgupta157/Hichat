@@ -1,5 +1,5 @@
-export const url = "https://hichat-fn3r.onrender.com";
-// export const url = "http://localhost:3000";
+// export const url = "https://hichat-fn3r.onrender.com";
+export const url = "http://localhost:3000";
 export function configure(token) {
   return {
     headers: {

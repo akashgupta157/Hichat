@@ -278,7 +278,10 @@ const Contacts = () => {
       >
         <h1 className="text-3xl font-semibold">Chats</h1>
         <div className="flex gap-3 items-center">
-          <Avatar src={you.profilePicture} />
+          <Avatar
+            src={you.profilePicture}
+            className={`${theme ? "skeleton-dark" : "skeleton-light"}`}
+          />
           <Menu>
             <MenuHandler>
               <ChevronDown className="cursor-pointer" />
@@ -411,7 +414,13 @@ const Contacts = () => {
                       addChatList(item._id);
                     }}
                   >
-                    <Avatar src={item.profilePicture} size="sm" />
+                    <Avatar
+                      src={item.profilePicture}
+                      size="sm"
+                      className={`${
+                        theme ? "skeleton-dark" : "skeleton-light"
+                      }`}
+                    />
                     <div>
                       <p className={`${theme ? "text-white" : "text-black"}`}>
                         {item.name}
@@ -499,7 +508,9 @@ const Contacts = () => {
                       <Avatar
                         src={chatName.groupPicture}
                         alt=""
-                        loading="lazy"
+                        className={`${
+                          theme ? "skeleton-dark" : "skeleton-light"
+                        }`}
                       />
                     ) : (
                       <AvataR
@@ -567,7 +578,13 @@ const Contacts = () => {
                 >
                   <div className="flex gap-3">
                     {chatName.isGroupChat ? (
-                      <Avatar src={chatName.groupPicture} alt="" />
+                      <Avatar
+                        src={chatName.groupPicture}
+                        className={`${
+                          theme ? "skeleton-dark" : "skeleton-light"
+                        }`}
+                        alt=""
+                      />
                     ) : (
                       <AvataR
                         src={chatName.profilePicture}

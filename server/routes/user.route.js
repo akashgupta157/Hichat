@@ -6,6 +6,7 @@ const jwt = require("jsonwebtoken");
 const axios = require("axios");
 const userMiddleware = require("../middlewares/user.middleware");
 const uploadMiddleware = require("../middlewares/upload.middleware");
+require("dotenv").config();
 router.get("/", async (req, res) => {
   try {
     res.send("Welcome User");
@@ -109,7 +110,7 @@ router.patch(
   async (req, res) => {
     try {
       const userId = req.params.id;
-      const imageUrl = `https://hichat-fn3r.onrender.com/file/${req.file.filename}`;
+      const imageUrl = `${process.env.url}/file/${req.file.filename}`;
       const existingUser = await userModel.findById(userId);
       existingUser.profilePicture = imageUrl || existingUser.profilePicture;
       await existingUser.save();

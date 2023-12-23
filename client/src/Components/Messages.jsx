@@ -168,6 +168,7 @@ const Messages = () => {
                     ? selectChat.data.detail.groupPicture
                     : selectChat.data.detail.profilePicture
                 }
+                className={`${theme ? "skeleton-dark" : "skeleton-light"}`}
                 size="sm"
                 alt="avatar"
               />
