@@ -11,7 +11,7 @@ const MultiSelect = ({ onMembersSelect }) => {
   const [groupSearch, setGroupSearch] = useState("");
   const [groupSearchResults, setGroupSearchResults] = useState([]);
   const [selectedMembers, setSelectedMembers] = useState([]);
-  const inputRef = useRef();  
+  const inputRef = useRef();
   useEffect(() => {
     const fetchResults = async () => {
       try {
@@ -48,14 +48,15 @@ const MultiSelect = ({ onMembersSelect }) => {
     );
   };
   useEffect(() => {
-    onMembersSelect(selectedMembers.map(member => member._id));
+    onMembersSelect(selectedMembers.map((member) => member._id));
   }, [selectedMembers]);
   return (
     <div>
       <div
         className={`border flex flex-wrap items-center rounded-md gap-2 p-2 ${
           theme ? "text-white" : "border-gray-900 text-black"
-        }`} onClick={()=>inputRef.current.focus()}
+        }`}
+        onClick={() => inputRef.current.focus()}
       >
         <div className="flex gap-2 items-center">
           {selectedMembers.map((member) => (
@@ -94,11 +95,18 @@ const MultiSelect = ({ onMembersSelect }) => {
               <div
                 key={member._id}
                 className={`flex gap-2 items-center px-3 rounded-md ${
-                  theme ? "text-white hover:bg-gray-900" : "hover:bg-white"
+                  theme
+                    ? "text-white hover:bg-gray-900"
+                    : "hover:bg-white text-black"
                 }`}
                 onClick={() => handleSelect(member)}
               >
-                <Avatar size="sm" src={member.profilePicture} alt="Profile" />
+                <Avatar
+                  className={`${theme ? "skeleton-dark" : "skeleton-light"}`}
+                  size="sm"
+                  src={member.profilePicture}
+                  alt="Profile"
+                />
                 <div>
                   <p>{member.name}</p>
                   <small>{member.email}</small>
