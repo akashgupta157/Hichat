@@ -1,8 +1,6 @@
 import {
   Avatar,
   IconButton,
-  Drawer,
-  Typography,
   Menu,
   MenuHandler,
   MenuList,
@@ -18,7 +16,6 @@ import {
   Smile,
   Send,
   Paperclip,
-  X,
   ArrowLeft,
   Loader2,
 } from "lucide-react";
@@ -27,6 +24,7 @@ import { notSelectedChat } from "../Redux/SelectedChat/action";
 import { configure, formatTime, url } from "./misc";
 import axios from "axios";
 import io from "socket.io-client";
+import InfoDrawer from "./InfoDrawer";
 var socket, selectedChatCompare;
 const Messages = () => {
   const dispatch = useDispatch();
@@ -34,9 +32,6 @@ const Messages = () => {
   const selectChat = useSelector((state) => state.selectChat);
   const you = useSelector((state) => state.auth.user);
   const config = configure(you.token);
-  const [openRight, setOpenRight] = useState(false);
-  const openDrawerRight = () => setOpenRight(true);
-  const closeDrawerRight = () => setOpenRight(false);
   const [messageInput, setMessageInput] = useState("");
   const [allMessages, setAllMessages] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -145,6 +140,9 @@ const Messages = () => {
     setMessageInput(messageInput + emoji);
   };
   // todo emoji ⮥
+  const [open, setOpen] = useState(false);
+  const openDrawer = () => setOpen(true);
+  const closeDrawer = () => setOpen(false);
   return (
     <div className={`message h-full ${theme ? "bg-[#131312]" : "bg-white"}`}>
       {selectChat.isChatSelected ? (
@@ -188,30 +186,11 @@ const Messages = () => {
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <Phone cursor={"pointer"} className="" />
-              <Video cursor={"pointer"} className="" />
-              <MoreHorizontal cursor={"pointer"} onClick={openDrawerRight} />
+              <Phone cursor={"pointer"} />
+              <Video cursor={"pointer"} />
+              <MoreHorizontal cursor={"pointer"} onClick={openDrawer} />
             </div>
-            <Drawer
-              placement="right"
-              open={openRight}
-              onClose={closeDrawerRight}
-              className="p-4"
-            >
-              <div className="flex items-center justify-between">
-                <Typography variant="h5" color="blue-gray">
-                  Contact Info
-                </Typography>
-                <IconButton
-                  variant="text"
-                  color="blue-gray"
-                  onClick={closeDrawerRight}
-                >
-                  <X />
-                </IconButton>
-              </div>
-              <hr className="my-3" />
-            </Drawer>
+            <InfoDrawer open={open} closeDrawer={closeDrawer} />
           </nav>
           {/* navbar */}
           {/* messagesArea */}

@@ -1,5 +1,4 @@
 export const url = import.meta.env.VITE_url;
-alert(url)
 export function configure(token) {
   return {
     headers: {
