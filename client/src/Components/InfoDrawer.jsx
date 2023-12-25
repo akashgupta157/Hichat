@@ -36,10 +36,9 @@ const InfoDrawer = ({ open, closeDrawer }) => {
             <>
               {selectChat.detail.groupAdmin._id === you._id ? (
                 <>
-                  {" "}
                   <div className="relative group cursor-pointer">
                     <div
-                      className={`m-auto block rounded-full w-48 md:w-50 overflow-hidden group-hover:blur-sm transition-all duration-300`}
+                      className={`m-auto block rounded-full w-20 md:w-48 overflow-hidden group-hover:blur-sm transition-all duration-300`}
                     >
                       <img
                         src={selectChat.detail.groupPicture}
@@ -57,12 +56,12 @@ const InfoDrawer = ({ open, closeDrawer }) => {
                   <img
                     src={selectChat.detail.groupPicture}
                     loading="lazy"
-                    className="m-auto block rounded-full w-48 md:w-50"
+                    className="m-auto block rounded-full w-20 md:w-48"
                   />
                   <h1 className="text-3xl font-medium">
                     {selectChat.detail.chatName}
                   </h1>
-                  <div className="mt-2 flex flex-col gap-1">
+                  <div className="mt-2 flex flex-col gap-1 max-h-[55vh] md:max-h-[45vh] overflow-y-scroll overflow-x-hidden">
                     {/* admin */}
                     <div
                       className={`flex justify-between items-center p-2 rounded cursor-pointer  ${

@@ -7,7 +7,8 @@ import {
   UsersRound,
   LogOut,
   Sun,
-  Moon,Pencil
+  Moon,
+  Pencil,
 } from "lucide-react";
 import {
   Avatar,
@@ -94,7 +95,6 @@ const Contacts = () => {
       if (isNewChat) {
         setNotifyChats([newMsg.chat._id, ...notifyChats]);
         setChatList([updatedChat, ...chatList]);
-        notificationAudio.play();
       } else {
         if (
           !selectedChatCompare.isChatSelected ||
@@ -104,7 +104,6 @@ const Contacts = () => {
           setChatList((prevChatList) =>
             removeDuplicates([updatedChat, ...prevChatList], "_id")
           );
-          notificationAudio.play();
         }
       }
     }
