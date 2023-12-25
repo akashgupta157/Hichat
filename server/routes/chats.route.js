@@ -86,6 +86,6 @@ router.post("/group", async (req, res) => {
     res.send("Error: " + error.message);
   }
 });
-router.get("/group", async (req, res) => {});
-// router.post("/", async (req, res) => {});
+// updateGroupChat
+router.patch("/group/:groupId", async (req, res) => {});
 module.exports = router;

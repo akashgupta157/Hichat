@@ -7,7 +7,7 @@ import {
   UsersRound,
   LogOut,
   Sun,
-  Moon,
+  Moon,Pencil
 } from "lucide-react";
 import {
   Avatar,
