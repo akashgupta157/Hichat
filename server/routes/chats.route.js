@@ -1,6 +1,8 @@
+const uploadMiddleware = require("../middlewares/upload.middleware");
 const chatModel = require("../models/chat.model");
 const userModel = require("../models/user.model");
 const router = require("express").Router();
+require("dotenv").config();
 //accessChat(one-to-one)
 router.post("/", async (req, res) => {
   const { userId } = req.body;
@@ -87,5 +89,21 @@ router.post("/group", async (req, res) => {
   }
 });
 // updateGroupChat
+router.patch(
+  "/groupPicture/:groupId",
+  uploadMiddleware.single("file"),
+  async (req, res) => {
+    try {
+      const groupId = req.params.groupId;
+      const imageUrl = `${process.env.url}/file/${req.file.filename}`;
+      const chat = await chatModel.findById(groupId);
+      chat.groupPicture = imageUrl || chat.groupPicture;
+      await chat.save();
+      res.json({ message: "done", imageUrl });
+    } catch (error) {
+      res.json({ message: error.message });
+    }
+  }
+);
 router.patch("/group/:groupId", async (req, res) => {});
 module.exports = router;

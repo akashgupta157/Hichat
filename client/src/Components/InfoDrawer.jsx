@@ -1,16 +1,74 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Drawer,
   Typography,
   IconButton,
   Avatar,
 } from "@material-tailwind/react";
+import { configure, url } from "../Components/misc";
+import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { X, Pencil } from "lucide-react";
+import { toast } from "react-toastify";
+import { selectedChat } from "../Redux/SelectedChat/action";
 const InfoDrawer = ({ open, closeDrawer }) => {
   const theme = useSelector((state) => state.theme.isDarkMode);
   const selectChat = useSelector((state) => state.selectChat.data);
   const you = useSelector((state) => state.auth.user);
+  const [image, setImage] = useState(selectChat.detail.groupPicture);
+  const [imgHover, setImgHover] = useState(false);
+  const config = configure(you.token);
+  const dispatch = useDispatch();
+  const handleImageChange = async (event) => {
+    const selectedImage = event.target.files[0];
+    if (selectedImage) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setImage(reader.result);
+      };
+      reader.readAsDataURL(selectedImage);
+      const Data = new FormData();
+      Data.append("name", selectedImage.name);
+      Data.append("file", selectedImage);
+      const { data } = await axios.patch(
+        `${url}/chat/groupPicture/${selectChat.id}`,
+        Data,
+        config
+      );
+      if (data.message == "done") {
+        dispatch(
+          selectedChat({
+            ...selectChat,
+            detail: {
+              ...selectChat.detail,
+              groupPicture: data.imageUrl,
+            },
+          })
+        );
+        toast.success(`group picture is updated`, {
+          position: "top-right",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      } else {
+        toast.error(`${data.message}`, {
+          position: "top-right",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      }
+    }
+  };
   return (
     <>
       <Drawer
@@ -36,19 +94,35 @@ const InfoDrawer = ({ open, closeDrawer }) => {
             <>
               {selectChat.detail.groupAdmin._id === you._id ? (
                 <>
-                  <div className="relative group cursor-pointer">
-                    <div
-                      className={`m-auto block rounded-full w-20 md:w-48 overflow-hidden group-hover:blur-sm transition-all duration-300`}
-                    >
-                      <img
-                        src={selectChat.detail.groupPicture}
-                        loading="lazy"
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
-                      <Pencil className={`text-white text-4xl`} />
-                    </div>
+                  <div
+                    className="relative m-auto block rounded-full w-20 md:w-48 h-20 md:h-48"
+                    onMouseEnter={() => {
+                      setImgHover(true);
+                    }}
+                    onMouseLeave={() => {
+                      setImgHover(false);
+                    }}
+                  >
+                    <img
+                      src={image}
+                      alt=""
+                      className="m-auto block rounded-full w-20 md:w-48 h-20 md:h-48 object-cover"
+                    />
+                    {imgHover && (
+                      <label
+                        htmlFor="img"
+                        className="absolute bottom-0 right-0 p-2 rounded-full bg-gray-600 text-white cursor-pointer"
+                      >
+                        <Pencil />
+                        <input
+                          type="file"
+                          className="hidden"
+                          id="img"
+                          onChange={handleImageChange}
+                          accept="image/*"
+                        />
+                      </label>
+                    )}
                   </div>
                 </>
               ) : (
@@ -56,7 +130,7 @@ const InfoDrawer = ({ open, closeDrawer }) => {
                   <img
                     src={selectChat.detail.groupPicture}
                     loading="lazy"
-                    className="m-auto block rounded-full w-20 md:w-48"
+                    className="m-auto block rounded-full w-20 md:w-48 h-20 md:h-48 object-cover"
                   />
                   <h1 className="text-3xl font-medium">
                     {selectChat.detail.chatName}
