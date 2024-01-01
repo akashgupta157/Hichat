@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   Drawer,
   Typography,
@@ -8,7 +8,7 @@ import {
 import { configure, url } from "../Components/misc";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { X, Pencil } from "lucide-react";
+import { X, Pencil, Check } from "lucide-react";
 import { toast } from "react-toastify";
 import { selectedChat } from "../Redux/SelectedChat/action";
 const InfoDrawer = ({ open, closeDrawer }) => {
@@ -19,6 +19,7 @@ const InfoDrawer = ({ open, closeDrawer }) => {
   const [imgHover, setImgHover] = useState(false);
   const config = configure(you.token);
   const dispatch = useDispatch();
+  // group image change
   const handleImageChange = async (event) => {
     const selectedImage = event.target.files[0];
     if (selectedImage) {
@@ -31,7 +32,7 @@ const InfoDrawer = ({ open, closeDrawer }) => {
       Data.append("name", selectedImage.name);
       Data.append("file", selectedImage);
       const { data } = await axios.patch(
-        `${url}/chat/groupPicture/${selectChat.id}`,
+        `${url}/chat/group/${selectChat.id}`,
         Data,
         config
       );
@@ -69,6 +70,8 @@ const InfoDrawer = ({ open, closeDrawer }) => {
       }
     }
   };
+  // group name change
+
   return (
     <>
       <Drawer
@@ -90,7 +93,7 @@ const InfoDrawer = ({ open, closeDrawer }) => {
           </IconButton>
         </div>
         <Typography>
-          {selectChat.isChatGroup ? (
+          {selectChat.isChatGroup ? ( // ? for group
             <>
               {selectChat.detail.groupAdmin._id === you._id ? (
                 <>
@@ -124,6 +127,7 @@ const InfoDrawer = ({ open, closeDrawer }) => {
                       </label>
                     )}
                   </div>
+                 
                 </>
               ) : (
                 <div className="text-center">
@@ -198,6 +202,7 @@ const InfoDrawer = ({ open, closeDrawer }) => {
               )}
             </>
           ) : (
+            // ? for individual
             <div className="text-center">
               <img
                 src={selectChat.detail.profilePicture}

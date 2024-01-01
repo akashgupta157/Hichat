@@ -44,7 +44,7 @@ router.post("/", async (req, res) => {
     }
   }
 });
-//fetchChat(one-to-one)
+//fetchChat
 router.get("/", async (req, res) => {
   try {
     chatModel
@@ -88,22 +88,25 @@ router.post("/group", async (req, res) => {
     res.send("Error: " + error.message);
   }
 });
-// updateGroupChat
+//updateGroupChat
 router.patch(
-  "/groupPicture/:groupId",
+  "/group/:groupId",
   uploadMiddleware.single("file"),
   async (req, res) => {
     try {
       const groupId = req.params.groupId;
-      const imageUrl = `${process.env.url}/file/${req.file.filename}`;
       const chat = await chatModel.findById(groupId);
-      chat.groupPicture = imageUrl || chat.groupPicture;
-      await chat.save();
-      res.json({ message: "done", imageUrl });
+      console.log(req.body);
+      if (req.body) {
+      } else {
+        const imageUrl = `${process.env.url}/file/${req.file.filename}`;
+        chat.groupPicture = imageUrl || chat.groupPicture;
+        await chat.save();
+        res.json({ message: "done", imageUrl });
+      }
     } catch (error) {
       res.json({ message: error.message });
     }
   }
 );
-router.patch("/group/:groupId", async (req, res) => {});
 module.exports = router;
