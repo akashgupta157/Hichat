@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Drawer,
   Typography,
@@ -8,7 +8,7 @@ import {
 import { configure, url } from "../Components/misc";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { X, Pencil, Check } from "lucide-react";
+import { X, Pencil, Trash2, Check } from "lucide-react";
 import { toast } from "react-toastify";
 import { selectedChat } from "../Redux/SelectedChat/action";
 const InfoDrawer = ({ open, closeDrawer }) => {
@@ -71,7 +71,69 @@ const InfoDrawer = ({ open, closeDrawer }) => {
     }
   };
   // group name change
-
+  const [isEditing, setEditing] = useState(false);
+  const [editedContent, setEditedContent] = useState(
+    selectChat.detail.chatName
+  );
+  const inputRef = useRef(null);
+  useEffect(() => {
+    if (isEditing) {
+      inputRef.current.focus();
+    }
+  }, [isEditing]);
+  const handleEditClick = () => {
+    setEditing(true);
+  };
+  const handleSaveClick = async () => {
+    setEditing(false);
+    const { data } = await axios.patch(
+      `${url}/chat/group/${selectChat.id}`,
+      { editedContent },
+      config
+    );
+    if (data.message == "done") {
+      dispatch(
+        selectedChat({
+          ...selectChat,
+          detail: {
+            ...selectChat.detail,
+            chatName: data.chatName,
+          },
+        })
+      );
+      toast.success(`group name is updated`, {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    } else {
+      toast.error(`${data.message}`, {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    }
+  };
+  const handleUndoClick = () => {
+    setEditing(false);
+    setEditedContent(selectChat.detail.chatName);
+  };
+  const handleContentChange = (e) => {
+    setEditedContent(e.target.value);
+  };
+  const inputStyle = {
+    width: `${editedContent.length * 20}px`,
+  };
   return (
     <>
       <Drawer
@@ -127,7 +189,78 @@ const InfoDrawer = ({ open, closeDrawer }) => {
                       </label>
                     )}
                   </div>
-                 
+                  <div>
+                    {isEditing ? (
+                      <div className="flex justify-center items-center gap-2 mt-2">
+                        <input
+                          type="text"
+                          value={editedContent}
+                          onChange={handleContentChange}
+                          className={`text-3xl font-medium outline-none border-0 `}
+                          ref={inputRef}
+                          style={inputStyle}
+                        />
+                        <button onClick={handleSaveClick}>
+                          <Check />
+                        </button>
+                        <button onClick={handleUndoClick}>
+                          <X />
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="flex justify-center items-center gap-2 mt-2">
+                        <h1 className="text-3xl font-medium">
+                          {editedContent}
+                        </h1>
+                        <Pencil onClick={handleEditClick} size={"20px"} />
+                      </div>
+                    )}
+                  </div>
+                  <div className="mt-2 flex flex-col gap-1 max-h-[55vh] md:max-h-[45vh] overflow-y-scroll overflow-x-hidden scrollbar-none">
+                    {/* admin */}
+                    <div
+                      className={`flex justify-between items-center p-2 rounded cursor-pointer  ${
+                        theme
+                          ? "hover:bg-[#4c4d52] bg-[#29292a]"
+                          : "hover:bg-[#b7b7b7] bg-[#dedcdc]"
+                      }`}
+                    >
+                      <div className="flex gap-2 items-center">
+                        <Avatar
+                          src={selectChat.detail.groupAdmin.profilePicture}
+                        />
+                        <b className="font-medium	">You</b>
+                      </div>
+                      <span className={`font-semibold`}>Admin</span>
+                    </div>
+                    {/* admin */}
+                    {selectChat.detail.members.map((e) => {
+                      if (
+                        e._id !== selectChat.detail.groupAdmin._id &&
+                        e._id !== you._id
+                      ) {
+                        return (
+                          <div
+                            key={e._id}
+                            className={`flex gap-2 items-center justify-between p-2 rounded cursor-pointer  ${
+                              theme
+                                ? "hover:bg-[#4c4d52] bg-[#29292a]"
+                                : "hover:bg-[#b7b7b7] bg-[#dedcdc]"
+                            }`}
+                          >
+                            <div className="flex gap-2 items-center">
+                              <Avatar src={e.profilePicture} />
+                              <div className="flex flex-col items-start">
+                                <b className="font-medium	">{e.name}</b>
+                                <small>{e.email}</small>
+                              </div>
+                            </div>
+                            <Trash2 />
+                          </div>
+                        );
+                      }
+                    })}
+                  </div>
                 </>
               ) : (
                 <div className="text-center">
@@ -139,7 +272,7 @@ const InfoDrawer = ({ open, closeDrawer }) => {
                   <h1 className="text-3xl font-medium">
                     {selectChat.detail.chatName}
                   </h1>
-                  <div className="mt-2 flex flex-col gap-1 max-h-[55vh] md:max-h-[45vh] overflow-y-scroll overflow-x-hidden">
+                  <div className="mt-2 flex flex-col gap-1 max-h-[55vh] md:max-h-[45vh] overflow-y-scroll overflow-x-hidden scrollbar-none">
                     {/* admin */}
                     <div
                       className={`flex justify-between items-center p-2 rounded cursor-pointer  ${

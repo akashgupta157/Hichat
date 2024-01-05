@@ -96,8 +96,10 @@ router.patch(
     try {
       const groupId = req.params.groupId;
       const chat = await chatModel.findById(groupId);
-      console.log(req.body);
       if (req.body) {
+        chat.chatName = req.body.editedContent;
+        await chat.save();
+        res.json({ message: "done", chatName: chat.chatName });
       } else {
         const imageUrl = `${process.env.url}/file/${req.file.filename}`;
         chat.groupPicture = imageUrl || chat.groupPicture;
