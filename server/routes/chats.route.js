@@ -96,7 +96,7 @@ router.patch(
     try {
       const groupId = req.params.groupId;
       const chat = await chatModel.findById(groupId);
-      if (req.body) {
+      if (req.body.editedContent) {
         chat.chatName = req.body.editedContent;
         await chat.save();
         res.json({ message: "done", chatName: chat.chatName });

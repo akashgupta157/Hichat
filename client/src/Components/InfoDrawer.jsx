@@ -85,43 +85,45 @@ const InfoDrawer = ({ open, closeDrawer }) => {
     setEditing(true);
   };
   const handleSaveClick = async () => {
-    setEditing(false);
-    const { data } = await axios.patch(
-      `${url}/chat/group/${selectChat.id}`,
-      { editedContent },
-      config
-    );
-    if (data.message == "done") {
-      dispatch(
-        selectedChat({
-          ...selectChat,
-          detail: {
-            ...selectChat.detail,
-            chatName: data.chatName,
-          },
-        })
+    if (editedContent.length >= 3) {
+      setEditing(false);
+      const { data } = await axios.patch(
+        `${url}/chat/group/${selectChat.id}`,
+        { editedContent },
+        config
       );
-      toast.success(`group name is updated`, {
-        position: "top-right",
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
-      });
-    } else {
-      toast.error(`${data.message}`, {
-        position: "top-right",
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
-      });
+      if (data.message == "done") {
+        dispatch(
+          selectedChat({
+            ...selectChat,
+            detail: {
+              ...selectChat.detail,
+              chatName: data.chatName,
+            },
+          })
+        );
+        toast.success(`group name is updated`, {
+          position: "top-right",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      } else {
+        toast.error(`${data.message}`, {
+          position: "top-right",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      }
     }
   };
   const handleUndoClick = () => {
@@ -132,7 +134,7 @@ const InfoDrawer = ({ open, closeDrawer }) => {
     setEditedContent(e.target.value);
   };
   const inputStyle = {
-    width: `${editedContent.length * 20}px`,
+    width: `${editedContent?.length * 20}px`,
   };
   return (
     <>
@@ -196,7 +198,7 @@ const InfoDrawer = ({ open, closeDrawer }) => {
                           type="text"
                           value={editedContent}
                           onChange={handleContentChange}
-                          className={`text-3xl font-medium outline-none border-0 `}
+                          className={`text-3xl font-medium outline-none border-0 bg-transparent`}
                           ref={inputRef}
                           style={inputStyle}
                         />
