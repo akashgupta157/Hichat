@@ -4,6 +4,7 @@ import {
   Typography,
   IconButton,
   Avatar,
+  Button,
 } from "@material-tailwind/react";
 import { configure, url } from "../Components/misc";
 import axios from "axios";
@@ -312,6 +313,10 @@ const InfoDrawer = ({ open, closeDrawer }) => {
                       }
                     })}
                   </div>
+                  <Button className="flex items-center gap-2 text-sm bg-red-800 m-auto">
+                    <Trash2 />
+                    Delete Group
+                  </Button>
                 </>
               ) : (
                 <div className="text-center">

@@ -144,5 +144,19 @@ router.patch("/remove/:groupId", async (req, res) => {
     res.json({ message: error.message });
   }
 });
+// Delete Group by Group Admin
+router.delete("/delete/:groupId", async (req, res) => {
+  try {
+    const groupId = req.params.groupId;
+    const chat = await chatModel.findById(groupId);
+    if (chat.groupAdmin.toString() !== req.user.userId) {
+      return res.json({ message: "Permission denied" });
+    }
+    await chatModel.findByIdAndDelete(groupId);
+    res.json({ message: "Group deleted successfully" });
+  } catch (error) {
+    res.json({ message: error.message });
+  }
+});
 
 module.exports = router;
