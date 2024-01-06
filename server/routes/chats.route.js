@@ -111,4 +111,38 @@ router.patch(
     }
   }
 );
+// remove member from group
+router.patch("/remove/:groupId", async (req, res) => {
+  try {
+    const groupId = req.params.groupId;
+    const chat = await chatModel.findById(groupId);
+    const memberIdToRemove = req.body.memberId;
+    if (chat.groupAdmin.toString() !== req.user.userId) {
+      return res.json({ message: "Permission denied" });
+    }
+    if (!chat.members.includes(memberIdToRemove)) {
+      return res.json({ message: "Member not found in the group" });
+    }
+    if (chat.members.length <= 3) {
+      return res.json({
+        message: "Cannot remove member, group must have at least 3 members",
+      });
+    }
+    chat.members = chat.members.filter(
+      (member) => member.toString() !== memberIdToRemove
+    );
+    await chat.save();
+    const updatedGroupChat = await chatModel
+      .findOne({ _id: chat._id })
+      .populate("members", "-password")
+      .populate("groupAdmin", "-password");
+    res.json({
+      message: "Member removed successfully",
+      members: updatedGroupChat.members,
+    });
+  } catch (error) {
+    res.json({ message: error.message });
+  }
+});
+
 module.exports = router;

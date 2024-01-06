@@ -136,6 +136,45 @@ const InfoDrawer = ({ open, closeDrawer }) => {
   const inputStyle = {
     width: `${editedContent?.length * 20}px`,
   };
+  const handleDelete = async (memberId) => {
+    const { data } = await axios.patch(
+      `${url}/chat/remove/${selectChat.id}`,
+      { memberId },
+      config
+    );
+    if (data.message == "Member removed successfully") {
+      dispatch(
+        selectedChat({
+          ...selectChat,
+          detail: {
+            ...selectChat.detail,
+            members: data.members,
+          },
+        })
+      );
+      toast.success(`${data.message}`, {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    } else {
+      toast.error(`${data.message}`, {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    }
+  };
   return (
     <>
       <Drawer
@@ -159,7 +198,7 @@ const InfoDrawer = ({ open, closeDrawer }) => {
         <Typography>
           {selectChat.isChatGroup ? ( // ? for group
             <>
-              {selectChat.detail.groupAdmin._id === you._id ? (
+              {selectChat.detail.groupAdmin._id === you._id ? ( // admin
                 <>
                   <div
                     className="relative m-auto block rounded-full w-20 md:w-48 h-20 md:h-48"
@@ -173,7 +212,9 @@ const InfoDrawer = ({ open, closeDrawer }) => {
                     <img
                       src={image}
                       alt=""
-                      className="m-auto block rounded-full w-20 md:w-48 h-20 md:h-48 object-cover"
+                      className={`${
+                        theme ? "skeleton-dark" : "skeleton-light"
+                      } m-auto block rounded-full w-20 md:w-48 h-20 md:h-48 object-cover`}
                     />
                     {imgHover && (
                       <label
@@ -230,6 +271,9 @@ const InfoDrawer = ({ open, closeDrawer }) => {
                       <div className="flex gap-2 items-center">
                         <Avatar
                           src={selectChat.detail.groupAdmin.profilePicture}
+                          className={`${
+                            theme ? "skeleton-dark" : "skeleton-light"
+                          }`}
                         />
                         <b className="font-medium	">You</b>
                       </div>
@@ -251,13 +295,18 @@ const InfoDrawer = ({ open, closeDrawer }) => {
                             }`}
                           >
                             <div className="flex gap-2 items-center">
-                              <Avatar src={e.profilePicture} />
+                              <Avatar
+                                src={e.profilePicture}
+                                className={`${
+                                  theme ? "skeleton-dark" : "skeleton-light"
+                                }`}
+                              />
                               <div className="flex flex-col items-start">
                                 <b className="font-medium	">{e.name}</b>
                                 <small>{e.email}</small>
                               </div>
                             </div>
-                            <Trash2 />
+                            <Trash2 onClick={() => handleDelete(e._id)} />
                           </div>
                         );
                       }
@@ -269,7 +318,9 @@ const InfoDrawer = ({ open, closeDrawer }) => {
                   <img
                     src={selectChat.detail.groupPicture}
                     loading="lazy"
-                    className="m-auto block rounded-full w-20 md:w-48 h-20 md:h-48 object-cover"
+                    className={`${
+                      theme ? "skeleton-dark" : "skeleton-light"
+                    } m-auto block rounded-full w-20 md:w-48 h-20 md:h-48 object-cover`}
                   />
                   <h1 className="text-3xl font-medium">
                     {selectChat.detail.chatName}
@@ -286,6 +337,9 @@ const InfoDrawer = ({ open, closeDrawer }) => {
                       <div className="flex gap-2">
                         <Avatar
                           src={selectChat.detail.groupAdmin.profilePicture}
+                          className={`${
+                            theme ? "skeleton-dark" : "skeleton-light"
+                          }`}
                         />
                         <div className="flex flex-col items-start">
                           <b className="font-medium	">
@@ -311,7 +365,12 @@ const InfoDrawer = ({ open, closeDrawer }) => {
                                 : "hover:bg-[#b7b7b7] bg-[#dedcdc]"
                             }`}
                           >
-                            <Avatar src={e.profilePicture} />
+                            <Avatar
+                              src={e.profilePicture}
+                              className={`${
+                                theme ? "skeleton-dark" : "skeleton-light"
+                              }`}
+                            />
                             <div className="flex flex-col items-start">
                               <b className="font-medium	">{e.name}</b>
                               <small>{e.email}</small>
@@ -328,7 +387,12 @@ const InfoDrawer = ({ open, closeDrawer }) => {
                           : "hover:bg-[#b7b7b7] bg-[#dedcdc]"
                       }`}
                     >
-                      <Avatar src={you.profilePicture} />
+                      <Avatar
+                        src={you.profilePicture}
+                        className={`${
+                          theme ? "skeleton-dark" : "skeleton-light"
+                        }`}
+                      />
                       <b className="font-medium">You</b>
                     </div>
                     {/* you */}
@@ -341,7 +405,6 @@ const InfoDrawer = ({ open, closeDrawer }) => {
             <div className="text-center">
               <img
                 src={selectChat.detail.profilePicture}
-                loading="lazy"
                 className={`${
                   theme ? "skeleton-dark" : "skeleton-light"
                 } m-auto block rounded-full w-48 md:w-50`}
