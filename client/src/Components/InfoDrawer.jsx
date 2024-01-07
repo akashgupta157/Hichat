@@ -260,7 +260,7 @@ const InfoDrawer = ({ open, closeDrawer }) => {
                       </div>
                     )}
                   </div>
-                  <div className="mt-2 flex flex-col gap-1 max-h-[55vh] md:max-h-[45vh] overflow-y-scroll overflow-x-hidden scrollbar-none">
+                  <div className="mt-2 flex flex-col gap-1 max-h-[55vh] md:max-h-[40vh] overflow-y-scroll overflow-x-hidden scrollbar-none">
                     {/* admin */}
                     <div
                       className={`flex justify-between items-center p-2 rounded cursor-pointer  ${
@@ -281,6 +281,37 @@ const InfoDrawer = ({ open, closeDrawer }) => {
                       <span className={`font-semibold`}>Admin</span>
                     </div>
                     {/* admin */}
+                    {selectChat.detail.members.map((e) => {
+                      if (
+                        e._id !== selectChat.detail.groupAdmin._id &&
+                        e._id !== you._id
+                      ) {
+                        return (
+                          <div
+                            key={e._id}
+                            className={`flex gap-2 items-center justify-between p-2 rounded cursor-pointer  ${
+                              theme
+                                ? "hover:bg-[#4c4d52] bg-[#29292a]"
+                                : "hover:bg-[#b7b7b7] bg-[#dedcdc]"
+                            }`}
+                          >
+                            <div className="flex gap-2 items-center">
+                              <Avatar
+                                src={e.profilePicture}
+                                className={`${
+                                  theme ? "skeleton-dark" : "skeleton-light"
+                                }`}
+                              />
+                              <div className="flex flex-col items-start">
+                                <b className="font-medium	">{e.name}</b>
+                                <small>{e.email}</small>
+                              </div>
+                            </div>
+                            <Trash2 onClick={() => handleDelete(e._id)} />
+                          </div>
+                        );
+                      }
+                    })}
                     {selectChat.detail.members.map((e) => {
                       if (
                         e._id !== selectChat.detail.groupAdmin._id &&

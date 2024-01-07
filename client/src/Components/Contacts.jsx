@@ -8,7 +8,6 @@ import {
   LogOut,
   Sun,
   Moon,
-  Pencil,
 } from "lucide-react";
 import {
   Avatar,
@@ -146,7 +145,8 @@ const Contacts = () => {
   }, [search]);
   // TODO search ⮥
   useEffect(() => {
-    const fetchList = async () => { //fetch chat List
+    const fetchList = async () => {
+      //fetch chat List
       setListLoading(true);
       const { data } = await axios.get(`${url}/chat`, config);
       setChatList(data);
