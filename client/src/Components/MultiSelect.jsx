@@ -87,7 +87,7 @@ const MultiSelect = ({ onMembersSelect }) => {
       <div className="relative flex justify-center z-10">
         {groupSearchResults.length > 0 && (
           <div
-            className={`absolute border w-[80%] mt-2 rounded-md py-3 px-5 flex flex-col gap-3 ${
+            className={`absolute border w-[100%] md:w-[80%] mt-2 rounded-md py-1 md:py-3 md:px-5 flex flex-col gap-3 ${
               theme ? "bg-black" : "bg-gray-100"
             }`}
           >
