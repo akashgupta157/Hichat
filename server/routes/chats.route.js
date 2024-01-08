@@ -158,5 +158,4 @@ router.delete("/delete/:groupId", async (req, res) => {
     res.json({ message: error.message });
   }
 });
-
 module.exports = router;

@@ -11,7 +11,7 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { X, Pencil, Trash2, Check } from "lucide-react";
 import { toast } from "react-toastify";
-import { selectedChat } from "../Redux/SelectedChat/action";
+import { notSelectedChat, selectedChat } from "../Redux/SelectedChat/action";
 const InfoDrawer = ({ open, closeDrawer }) => {
   const theme = useSelector((state) => state.theme.isDarkMode);
   const selectChat = useSelector((state) => state.selectChat.data);
@@ -176,6 +176,37 @@ const InfoDrawer = ({ open, closeDrawer }) => {
       });
     }
   };
+  const handleGroupDelete = async () => {
+    const { data } = await axios.delete(
+      `${url}/chat/delete/${selectChat.id}`,
+      config
+    );
+    if (data.message == "Group deleted successfully") {
+      dispatch(notSelectedChat());
+      closeDrawer();
+      toast.success(`${data.message}`, {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    } else {
+      toast.error(`${data.message}`, {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    }
+  };
   return (
     <>
       <Drawer
@@ -260,7 +291,7 @@ const InfoDrawer = ({ open, closeDrawer }) => {
                       </div>
                     )}
                   </div>
-                  <div className="mt-2 flex flex-col gap-1 max-h-[55vh] md:max-h-[40vh] overflow-y-scroll overflow-x-hidden scrollbar-none">
+                  <div className="mt-2 flex flex-col gap-1 h-[55vh] md:h-[40vh] overflow-y-scroll overflow-x-hidden scrollbar-none">
                     {/* admin */}
                     <div
                       className={`flex justify-between items-center p-2 rounded cursor-pointer  ${
@@ -313,7 +344,10 @@ const InfoDrawer = ({ open, closeDrawer }) => {
                       }
                     })}
                   </div>
-                  <Button className="flex items-center gap-2 text-sm bg-red-800 m-auto">
+                  <Button
+                    className="flex items-center gap-2 text-sm bg-red-800 m-auto mt-4"
+                    onClick={handleGroupDelete}
+                  >
                     <Trash2 />
                     Delete Group
                   </Button>
