@@ -112,7 +112,15 @@ const Contacts = () => {
       setNewMsg(newMessage);
     });
   });
+  const fetchList = async () => {
+    //fetch chat List
+    setListLoading(true);
+    const { data } = await axios.get(`${url}/chat`, config);
+    setChatList(data);
+    setListLoading(false);
+  };
   useEffect(() => {
+    fetchList()
     selectedChatCompare = selectChat;
     let newArray = notifyChats.filter((e) => e !== selectedChatCompare.data.id);
     setNotifyChats(newArray);
@@ -145,13 +153,6 @@ const Contacts = () => {
   }, [search]);
   // TODO search ⮥
   useEffect(() => {
-    const fetchList = async () => {
-      //fetch chat List
-      setListLoading(true);
-      const { data } = await axios.get(`${url}/chat`, config);
-      setChatList(data);
-      setListLoading(false);
-    };
     fetchList();
     window.addEventListener("beforeunload", () => {
       socket.emit("logout", you._id);
