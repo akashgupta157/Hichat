@@ -120,7 +120,7 @@ const Contacts = () => {
     setListLoading(false);
   };
   useEffect(() => {
-    fetchList()
+    fetchList();
     selectedChatCompare = selectChat;
     let newArray = notifyChats.filter((e) => e !== selectedChatCompare.data.id);
     setNotifyChats(newArray);
@@ -612,9 +612,10 @@ const Contacts = () => {
                         ) : null}
                       </div>
                       <p
-                        className={`text-sm	${
+                        className={`text-sm overflow-hidden whitespace-nowrap overflow-ellipsis ${
                           theme ? "text-white" : "text-black"
                         }`}
+                        style={{ maxWidth: "200px" }}
                       >
                         {chatName.isGroupChat
                           ? `${

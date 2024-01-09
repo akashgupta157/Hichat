@@ -5,7 +5,7 @@ const storage = new GridFsStorage({
   url: process.env.mongoUrl,
   options: { useUnifiedTopology: true, useNewUrlParser: true },
   file: (req, file) => {
-    const match = ["image/*", "application/pdf", "video/*", "audio/*"];
+    const match = ["image/*", "application/*", "video/*", "audio/*"];
     if (match.indexOf(file.mimetype) === -1) {
       return `${Date.now()}-file-${file.originalname}`;
     }

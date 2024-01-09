@@ -15,7 +15,7 @@ conn.once("open", () => {
 router.get("/:fileName", async (req, res) => {
   try {
     const file = await gfs.files.findOne({ filename: req.params.fileName });
-    const readStream = gridFsBucket.openDownloadStream(file._id);
+    const readStream = gridFsBucket.openDownloadStream(file?._id);
     readStream.pipe(res);
   } catch (error) {
     res.json({ message: error.message });
@@ -23,8 +23,8 @@ router.get("/:fileName", async (req, res) => {
 });
 router.post("/upload", uploadMiddleware.single("file"), async (req, res) => {
   try {
-    const imageUrl = `${process.env.url}/file/${req.file.filename}`;
-    res.json({ imageUrl });
+    const url = `${process.env.url}/file/${req.file.filename}`;
+    res.json({ url });
   } catch (error) {
     res.json({ message: error.message });
   }
