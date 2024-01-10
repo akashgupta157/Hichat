@@ -18,10 +18,11 @@ import {
   Paperclip,
   ArrowLeft,
   Loader2,
+  File,
 } from "lucide-react";
 import logo from "../assets/logo.png";
 import { notSelectedChat } from "../Redux/SelectedChat/action";
-import { configure, formatTime, url } from "./misc";
+import { configure, formatTime, isUrl, url } from "./misc";
 import axios from "axios";
 import io from "socket.io-client";
 import InfoDrawer from "./InfoDrawer";
@@ -35,7 +36,14 @@ const Messages = () => {
   const [messageInput, setMessageInput] = useState("");
   const [allMessages, setAllMessages] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [sendLoading, setSendLoading] = useState(false);
   const messagesContainerRef = useRef(null);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setSelectedFile(file);
+    setMessageInput(file.name);
+  };
   // TODO scroll to down ⮧
   useEffect(() => {
     if (messagesContainerRef.current) {
@@ -82,23 +90,37 @@ const Messages = () => {
   });
   // TODO socket.io ⮥
   // TODO send msg ⮧
-  const sendMsg = () => {
+  const sendMsg = async () => {
     if (messageInput.length > 0) {
-      axios
-        .post(
-          `${url}/message`,
-          {
-            content: messageInput,
-            chatId: selectChat.data.id,
-          },
-          config
-        )
-        .then((res) => {
-          setAllMessages([...allMessages, res.data]);
-          socket.emit("new message", res.data);
-        });
+      setSendLoading(true);
+      let uploadedFileUrl = null;
+      if (selectedFile) {
+        const formData = new FormData();
+        formData.append("name", selectedFile.name);
+        formData.append("file", selectedFile);
+        try {
+          const { data } = await axios.post(`${url}/file/upload`, formData);
+          uploadedFileUrl = data.url;
+        } catch (error) {
+          console.error("Error uploading file:", error);
+        }
+        setSelectedFile();
+      }
+      const { data } = await axios.post(
+        `${url}/message`,
+        {
+          content: uploadedFileUrl || messageInput,
+          chatId: selectChat.data.id,
+        },
+        config
+      );
+      setAllMessages([...allMessages, data]);
+      socket.emit("new message", data);
+      setMessageInput("");
+      setSendLoading(false);
     }
   };
+
   // TODO send msg ⮥
   // todo fetch All Messages ⮧
   useEffect(() => {
@@ -221,7 +243,7 @@ const Messages = () => {
                         const sender = msg.sender;
                         if (sender._id === you._id) {
                           return (
-                            <div className="flex justify-end p-2">
+                            <div className="flex justify-end p-2" key={i}>
                               <section
                                 className={`rounded ${
                                   theme
@@ -229,7 +251,31 @@ const Messages = () => {
                                     : "bg-[#0eb6fa]"
                                 }  py-1 px-3`}
                               >
-                                <h1 key={i}>{msg.content}</h1>
+                                <div>
+                                  {isUrl(msg.content) === "image" ? (
+                                    <img src={msg.content} alt={msg.content} />
+                                  ) : isUrl(msg.content) === "video" ? (
+                                    <video controls>
+                                      <source src={msg.content} />
+                                    </video>
+                                  ) : isUrl(msg.content) === "audio" ? (
+                                    <audio controls>
+                                      <source src={msg.content} />
+                                    </audio>
+                                  ) : isUrl(msg.content) === "document" ? (
+                                    <a
+                                      href={msg.content}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="flex gap-1"
+                                    >
+                                      <File />
+                                      {msg.content.split("file-")[1]}
+                                    </a>
+                                  ) : (
+                                    <h1>{msg.content}</h1>
+                                  )}
+                                </div>
                                 <b className={`flex justify-end text-xs `}>
                                   {formatTime(msg.createdAt)}
                                 </b>
@@ -238,7 +284,7 @@ const Messages = () => {
                           );
                         } else {
                           return (
-                            <div className="p-2 min-w-[50%]">
+                            <div className="p-2 min-w-[50%]" key={i}>
                               <section
                                 className={`rounded w-fit py-1 px-3 ${
                                   theme
@@ -249,9 +295,31 @@ const Messages = () => {
                                 {selectChat.data.isChatGroup && (
                                   <small>~ {sender.name}</small>
                                 )}
-                                <p key={i} className="">
-                                  {msg.content}
-                                </p>
+                                <div>
+                                  {isUrl(msg.content) === "image" ? (
+                                    <img src={msg.content} alt={msg.content} />
+                                  ) : isUrl(msg.content) === "video" ? (
+                                    <video controls>
+                                      <source src={msg.content} />
+                                    </video>
+                                  ) : isUrl(msg.content) === "audio" ? (
+                                    <audio controls>
+                                      <source src={msg.content} />
+                                    </audio>
+                                  ) : isUrl(msg.content) === "document" ? (
+                                    <a
+                                      href={msg.content}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="flex gap-1"
+                                    >
+                                      <File />
+                                      {msg.content.split("file-")[1]}
+                                    </a>
+                                  ) : (
+                                    <h1>{msg.content}</h1>
+                                  )}
+                                </div>
                                 <b className="flex justify-end text-xs">
                                   {formatTime(msg.createdAt)}
                                 </b>
@@ -275,7 +343,7 @@ const Messages = () => {
           >
             <div className="flex items-center justify-center gap-2 w-full">
               <div
-                className={`flex px-2 md:px-5 py-2 gap-3 rounded-lg w-[80%] md:w-[90%] ${
+                className={`flex items-center px-2 md:px-5 py-2 gap-3 rounded-lg w-[80%] md:w-[90%] ${
                   theme ? "bg-[#252425] text-[#bebebe]" : "bg-gray-300"
                 }`}
               >
@@ -287,7 +355,15 @@ const Messages = () => {
                     <Picker data={data} onEmojiSelect={addEmoji} />
                   </MenuList>
                 </Menu>
-                <Paperclip cursor={"pointer"} />
+                <label htmlFor="fileInput" className="cursor-pointer">
+                  <Paperclip cursor={"pointer"} size={"22px"} />
+                  <input
+                    id="fileInput"
+                    type="file"
+                    className="hidden"
+                    onChange={handleFileChange}
+                  />
+                </label>
                 <input
                   type="text"
                   required
@@ -303,16 +379,19 @@ const Messages = () => {
                   }}
                 />
               </div>
-              <IconButton
-                type="submit"
-                className="bg-[#000000]"
-                onClick={() => {
-                  sendMsg();
-                  setMessageInput("");
-                }}
-              >
-                <Send />
-              </IconButton>
+              {sendLoading ? (
+                <IconButton disabled>
+                  <Loader2 className="m-auto animate-spin" />
+                </IconButton>
+              ) : (
+                <IconButton
+                  type="submit"
+                  className="bg-[#000000]"
+                  onClick={sendMsg}
+                >
+                  <Send />
+                </IconButton>
+              )}
             </div>
           </footer>
           {/* input box for send message */}

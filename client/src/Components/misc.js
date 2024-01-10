@@ -38,3 +38,23 @@ export function formatDateTime(timestamp) {
     return `${day}/${month < 10 ? "0" : ""}${month}/${year}`;
   }
 }
+export function isUrl(str) {
+  const urlRegex = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;
+  if (urlRegex.test(str)) {
+    const imageRegex = /\.(jpg|jpeg|png|gif)$/i;
+    const videoRegex = /\.(mp4|ogg|webm)$/i;
+    const audioRegex = /\.(mp3|wav)$/i;
+    const documentRegex = /\.(pdf|doc|docx|xls|xlsx)$/i;
+    if (imageRegex.test(str)) {
+      return "image";
+    } else if (videoRegex.test(str)) {
+      return "video";
+    } else if (audioRegex.test(str)) {
+      return "audio";
+    } else if (documentRegex.test(str)) {
+      return "document";
+    }
+  }else{
+    return str
+  }
+}
