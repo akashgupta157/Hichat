@@ -334,9 +334,10 @@ const Contacts = () => {
               </label>
               <input
                 type="file"
-                style={{ display: "none" }}
+                className="hidden"
                 id="file"
                 onChange={handleImageChange}
+                accept="image/*"
               />
               <input
                 type="text"

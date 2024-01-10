@@ -245,7 +245,7 @@ const Messages = () => {
                           return (
                             <div className="flex justify-end p-2" key={i}>
                               <section
-                                className={`rounded ${
+                                className={`rounded max-w-[50%] ${
                                   theme
                                     ? "bg-[#0171b6] text-white"
                                     : "bg-[#0eb6fa]"
@@ -253,13 +253,13 @@ const Messages = () => {
                               >
                                 <div>
                                   {isUrl(msg.content) === "image" ? (
-                                    <img src={msg.content} alt={msg.content} />
+                                    <img className="py-3" src={msg.content} alt={msg.content} />
                                   ) : isUrl(msg.content) === "video" ? (
-                                    <video controls>
+                                    <video className="py-3" controls>
                                       <source src={msg.content} />
                                     </video>
                                   ) : isUrl(msg.content) === "audio" ? (
-                                    <audio controls>
+                                    <audio className="py-1" controls>
                                       <source src={msg.content} />
                                     </audio>
                                   ) : isUrl(msg.content) === "document" ? (
@@ -267,7 +267,7 @@ const Messages = () => {
                                       href={msg.content}
                                       target="_blank"
                                       rel="noopener noreferrer"
-                                      className="flex gap-1"
+                                      className="flex gap-1 pt-2 underline"
                                     >
                                       <File />
                                       {msg.content.split("file-")[1]}
@@ -286,7 +286,7 @@ const Messages = () => {
                           return (
                             <div className="p-2 min-w-[50%]" key={i}>
                               <section
-                                className={`rounded w-fit py-1 px-3 ${
+                                className={`rounded w-fit py-1 px-3 max-w-[50%] ${
                                   theme
                                     ? "bg-[#212121] text-white"
                                     : "bg-[#d6d6d7]"
@@ -295,15 +295,15 @@ const Messages = () => {
                                 {selectChat.data.isChatGroup && (
                                   <small>~ {sender.name}</small>
                                 )}
-                                <div>
+                               <div>
                                   {isUrl(msg.content) === "image" ? (
-                                    <img src={msg.content} alt={msg.content} />
+                                    <img className="py-3" src={msg.content} alt={msg.content} />
                                   ) : isUrl(msg.content) === "video" ? (
-                                    <video controls>
+                                    <video className="py-3" controls>
                                       <source src={msg.content} />
                                     </video>
                                   ) : isUrl(msg.content) === "audio" ? (
-                                    <audio controls>
+                                    <audio className="py-1" controls>
                                       <source src={msg.content} />
                                     </audio>
                                   ) : isUrl(msg.content) === "document" ? (
@@ -311,7 +311,7 @@ const Messages = () => {
                                       href={msg.content}
                                       target="_blank"
                                       rel="noopener noreferrer"
-                                      className="flex gap-1"
+                                      className="flex gap-1 pt-2 underline"
                                     >
                                       <File />
                                       {msg.content.split("file-")[1]}
