@@ -27,36 +27,7 @@
 - **React**: Utilized for its efficient, declarative, and flexible JavaScript library for building user interfaces.
 - **Socket.IO**: Enables real-time, bidirectional, and event-based communication.
 - **MongoDB**: Chosen for its powerful document database which stores data in flexible, JSON-like documents.
-- Tailwind CSS: A utility-first CSS framework for rapidly building custom designs, allowing for a highly responsive and visually cohesive user experience across all device types.
-
-## Getting Started 💻
-
-### Clone the repository:
-
-```bash
-git clone https://github.com/yourusername/hichat.git
-```
-
-### Install dependencies:
-
-Navigate to the project directory and install the required dependencies.
-
-```bash
-cd hichat
-npm install
-```
-
-### Environment Setup:
-
-Create a `.env` file in the root directory. Add the necessary environment variables as specified in the `.env.example` file.
-
-### Launch the Application:
-
-```bash
-npm start
-```
-
-The application will now be running and accessible on `http://localhost:3000`.
+- **Tailwind CSS**: A utility-first CSS framework for rapidly building custom designs, allowing for a highly responsive and visually cohesive user experience across all device types.
 
 ## Deployment 🚀
 Hichat is deployed on Vercel. Visit the live deployment at https://hichat-chat.vercel.app.
