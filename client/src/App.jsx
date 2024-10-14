@@ -16,8 +16,8 @@ export default function App() {
   return (
     <>
       {load ? (
-        <div class="linear-activity">
-          <div class="indeterminate"></div>
+        <div className="linear-activity">
+          <div className="indeterminate"></div>
         </div>
       ) : (
         <div className="flex">
