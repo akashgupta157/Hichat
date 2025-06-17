@@ -1,6 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
-const AvataR = ({ src, w, h, isOnline }) => {
+const IndicatorAvatar = ({ src, w, h, isOnline }) => {
   const theme = useSelector((state) => state.theme.isDarkMode);
   return (
     <>
@@ -22,4 +22,4 @@ const AvataR = ({ src, w, h, isOnline }) => {
   );
 };
 
-export default AvataR;
+export default IndicatorAvatar;

@@ -28,7 +28,7 @@ import { toggleTheme } from "../Redux/Theme/action";
 import { logout } from "../Redux/Auth/action";
 import MultiSelect from "./MultiSelect";
 import io from "socket.io-client";
-import AvataR from "./AvataR";
+import IndicatorAvatar from "./IndicatorAvatar";
 import livechat from "../assets/livechat.mp3";
 var socket, selectedChatCompare;
 const Contacts = () => {
@@ -276,8 +276,8 @@ const Contacts = () => {
           theme ? "text-white" : "text-black"
         }`}
       >
-        <h1 className="text-3xl font-semibold">Chats</h1>
-        <div className="flex gap-3 items-center">
+        <h1 className="font-semibold text-3xl">Chats</h1>
+        <div className="flex items-center gap-3">
           <Avatar
             src={you.profilePicture}
             className={`${theme ? "skeleton-dark" : "skeleton-light"}`}
@@ -328,7 +328,7 @@ const Contacts = () => {
             Create Group
           </DialogHeader>
           <DialogBody className="flex flex-col gap-3.5">
-            <div className="flex flex-col md:flex-row md:items-center justify-start gap-4 ">
+            <div className="flex md:flex-row flex-col justify-start md:items-center gap-4">
               <label htmlFor="file" className="cursor-pointer">
                 <Avatar size="lg" src={image} />
               </label>
@@ -390,7 +390,7 @@ const Contacts = () => {
             autoComplete="off"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="last:w-full bg-transparent outline-none"
+            className="bg-transparent outline-none last:w-full"
           />
         </label>
         <div className="relative">
@@ -514,7 +514,7 @@ const Contacts = () => {
                         }`}
                       />
                     ) : (
-                      <AvataR
+                      <IndicatorAvatar
                         src={chatName.profilePicture}
                         w={12}
                         h={12}
@@ -534,7 +534,7 @@ const Contacts = () => {
                             : chatName.name}
                         </h2>
                         {notifyChats.includes(item._id) ? (
-                          <p className=" flex justify-center items-center w-4 h-4 rounded-full bg-red-600 text-white text-xs">
+                          <p className="flex justify-center items-center bg-red-600 rounded-full w-4 h-4 text-white text-xs">
                             {countOccurrences(notifyChats, item._id)}
                           </p>
                         ) : null}
@@ -587,7 +587,7 @@ const Contacts = () => {
                         alt=""
                       />
                     ) : (
-                      <AvataR
+                      <IndicatorAvatar
                         src={chatName.profilePicture}
                         w={12}
                         h={12}
@@ -607,7 +607,7 @@ const Contacts = () => {
                             : chatName.name}
                         </h2>
                         {notifyChats.includes(item._id) ? (
-                          <p className=" flex justify-center items-center w-4 h-4 rounded-full bg-red-600 text-white text-xs">
+                          <p className="flex justify-center items-center bg-red-600 rounded-full w-4 h-4 text-white text-xs">
                             {countOccurrences(notifyChats, item._id)}
                           </p>
                         ) : null}
