@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const chatSchema = mongoose.Schema(
+const chat = mongoose.Schema(
   {
     chatName: { type: String, trim: true },
     isGroupChat: { type: Boolean, default: false },
@@ -8,15 +8,15 @@ const chatSchema = mongoose.Schema(
       default:
         "https://i.ibb.co/0hvhdRK/240-F-686603587-bo-Vdde3-U00-AMRWSVIMnz3-Gu-UBAouyued0.jpg",
     },
-    members: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    members: [{ type: mongoose.Schema.Types.ObjectId, ref: "UserModel" }],
     latestMessage: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Message",
+      ref: "MessageModel",
     },
-    groupAdmin: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    groupAdmin: { type: mongoose.Schema.Types.ObjectId, ref: "UserModel" },
   },
   {
     timestamps: true,
   }
 );
-module.exports = mongoose.model("Chat", chatSchema);
+module.exports = mongoose.model("ChatModel", chat);
