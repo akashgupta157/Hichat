@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Search,
@@ -21,7 +21,7 @@ import {
   DialogFooter,
   Button,
 } from "@material-tailwind/react";
-import { configure, formatDateTime, url } from "./misc";
+import { configure, formatDateTime, url } from "../misc";
 import axios from "axios";
 import { notSelectedChat, selectedChat } from "../Redux/SelectedChat/action";
 import { toggleTheme } from "../Redux/Theme/action";
@@ -300,8 +300,8 @@ const Contacts = () => {
                 className="flex items-center gap-2"
                 onClick={() => dispatch(toggleTheme())}
               >
-                {theme ? <Moon /> : <Sun />}
-                <p className="text-lg">Theme</p>
+                {theme ? <Sun /> : <Moon />}
+                <p className="text-lg">{theme ? "Light Mode" : "Dark Mode"}</p>
               </MenuItem>
               <MenuItem
                 className="flex items-center gap-2"
@@ -516,13 +516,12 @@ const Contacts = () => {
                     ) : (
                       <IndicatorAvatar
                         src={chatName.profilePicture}
-                        w={12}
-                        h={12}
                         isOnline={isUserOnline(chatName._id)}
                         alt=""
+                        theme={theme}
                       />
                     )}
-                    <div>
+                    <div className="flex-1">
                       <div className="flex items-center gap-2">
                         <h2
                           className={`font-bold text-base	${
@@ -554,7 +553,7 @@ const Contacts = () => {
               return (
                 <div
                   key={index}
-                  className={`flex p-3 rounded-xl justify-between items-start cursor-pointer  ${
+                  className={`flex relative p-3 rounded-xl justify-between items-start cursor-pointer  ${
                     theme
                       ? "hover:bg-[#4c4d52] bg-[#171718]"
                       : "hover:bg-[#d6d6d7] bg-[#f7f7f7]"
@@ -589,8 +588,6 @@ const Contacts = () => {
                     ) : (
                       <IndicatorAvatar
                         src={chatName.profilePicture}
-                        w={12}
-                        h={12}
                         isOnline={isUserOnline(chatName._id)}
                         alt=""
                       />
@@ -613,10 +610,9 @@ const Contacts = () => {
                         ) : null}
                       </div>
                       <p
-                        className={`text-sm overflow-hidden whitespace-nowrap overflow-ellipsis ${
+                        className={`text-sm overflow-hidden whitespace-nowrap overflow-ellipsis w-64 md:w-56 ${
                           theme ? "text-white" : "text-black"
                         }`}
-                        style={{ maxWidth: "200px" }}
                       >
                         {chatName.isGroupChat
                           ? `${
@@ -628,7 +624,11 @@ const Contacts = () => {
                       </p>
                     </div>
                   </div>
-                  <small className={`${theme ? "text-white" : "text-black"}`}>
+                  <small
+                    className={`absolute top-2 right-2 ${
+                      theme ? "text-white" : "text-black"
+                    }`}
+                  >
                     {formatDateTime(item.updatedAt)}
                   </small>
                 </div>

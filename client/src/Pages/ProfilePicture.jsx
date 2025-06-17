@@ -1,11 +1,11 @@
-import { Button } from "@material-tailwind/react";
-import React, { useState, useRef } from "react";
-import { url } from "../Components/misc";
 import axios from "axios";
-import { useDispatch } from "react-redux";
+import { url } from "../misc";
 import { toast } from "react-toastify";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useState, useRef } from "react";
+import { useDispatch } from "react-redux";
 import { login } from "../Redux/Auth/action";
+import { Button } from "@material-tailwind/react";
+import { useParams, Link, useNavigate } from "react-router-dom";
 const ProfilePicture = () => {
   const user = JSON.parse(sessionStorage.getItem("user"));
   const { id } = useParams();
@@ -57,15 +57,15 @@ const ProfilePicture = () => {
   };
   return (
     <div className="flex justify-center items-center w-full h-[80vh]">
-      <div className="text-[#0d0c22] w-full px-5 sm:w-[400px] sm:shadow-xl sm:py-5 sm:rounded sm:mt-5">
-        <h1 className="text-2xl font-bold mb-[30px]">
+      <div className="sm:shadow-xl sm:mt-5 px-5 sm:py-5 sm:rounded w-full sm:w-[400px] text-[#0d0c22]">
+        <h1 className="mb-[30px] font-bold text-2xl">
           Select your Profile Picture
         </h1>
         <img
           src={image}
-          className="w-[200px] h-[200px] m-auto rounded-full border"
+          className="m-auto border rounded-full w-[200px] h-[200px]"
         />
-        <div className="flex justify-center pt-5 gap-10">
+        <div className="flex justify-center gap-10 pt-5">
           <Button onClick={handleButtonClick}>Change</Button>
           <input
             type="file"

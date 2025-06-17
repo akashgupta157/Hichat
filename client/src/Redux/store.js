@@ -1,9 +1,9 @@
-import { legacy_createStore, applyMiddleware, combineReducers } from "redux";
 import thunk from "redux-thunk";
-import themeReducer from "./Theme/reducer";
 import authReducer from "./Auth/reducer";
+import themeReducer from "./Theme/reducer";
 import pageLoadReducer from "./PageLoad/reducer";
 import selectedChatReducer from "./SelectedChat/reducer";
+import { legacy_createStore, applyMiddleware, combineReducers } from "redux";
 const rootReducer = combineReducers({
   theme: themeReducer,
   auth: authReducer,

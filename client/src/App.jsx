@@ -1,5 +1,3 @@
-import React from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
 import Chat from "./Pages/Chat";
 import Login from "./Pages/Login";
 import Register from "./Pages/Register";
@@ -7,6 +5,7 @@ import { useSelector } from "react-redux";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ProfilePicture from "./Pages/ProfilePicture";
+import { Routes, Route, Navigate } from "react-router-dom";
 export default function App() {
   const auth = useSelector((state) => state.auth.isAuthenticated);
   const load = useSelector((state) => state.pageLoad);

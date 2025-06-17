@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { useState, useEffect, useRef } from "react";
+import { configure, url } from "../misc";
+import { useDispatch, useSelector } from "react-redux";
+import { X, Pencil, Trash2, Check } from "lucide-react";
+import { notSelectedChat, selectedChat } from "../Redux/SelectedChat/action";
 import {
   Drawer,
   Typography,
@@ -6,12 +12,7 @@ import {
   Avatar,
   Button,
 } from "@material-tailwind/react";
-import { configure, url } from "../Components/misc";
-import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
-import { X, Pencil, Trash2, Check } from "lucide-react";
-import { toast } from "react-toastify";
-import { notSelectedChat, selectedChat } from "../Redux/SelectedChat/action";
+
 const InfoDrawer = ({ open, closeDrawer }) => {
   const theme = useSelector((state) => state.theme.isDarkMode);
   const selectChat = useSelector((state) => state.selectChat.data);
@@ -215,7 +216,7 @@ const InfoDrawer = ({ open, closeDrawer }) => {
         onClose={closeDrawer}
         className={`p-4 ${theme ? "bg-[#131312]" : "bg-white"}`}
       >
-        <div className="mb-6 flex items-center justify-between">
+        <div className="flex justify-between items-center mb-6">
           <Typography variant="h5">
             {selectChat.isChatGroup ? "Group Info" : "Contact Info"}
           </Typography>
@@ -233,7 +234,7 @@ const InfoDrawer = ({ open, closeDrawer }) => {
               {selectChat.detail.groupAdmin._id === you._id ? ( // admin
                 <>
                   <div
-                    className="relative m-auto block rounded-full w-20 md:w-48 h-20 md:h-48"
+                    className="block relative m-auto rounded-full w-20 md:w-48 h-20 md:h-48"
                     onMouseEnter={() => {
                       setImgHover(true);
                     }}
@@ -251,7 +252,7 @@ const InfoDrawer = ({ open, closeDrawer }) => {
                     {imgHover && (
                       <label
                         htmlFor="img"
-                        className="absolute bottom-0 right-0 p-2 rounded-full bg-gray-600 text-white cursor-pointer"
+                        className="right-0 bottom-0 absolute bg-gray-600 p-2 rounded-full text-white cursor-pointer"
                       >
                         <Pencil />
                         <input
@@ -284,14 +285,14 @@ const InfoDrawer = ({ open, closeDrawer }) => {
                       </div>
                     ) : (
                       <div className="flex justify-center items-center gap-2 mt-2">
-                        <h1 className="text-3xl font-medium">
+                        <h1 className="font-medium text-3xl">
                           {editedContent}
                         </h1>
                         <Pencil onClick={handleEditClick} size={"20px"} />
                       </div>
                     )}
                   </div>
-                  <div className="mt-2 flex flex-col gap-1 h-[55vh] md:h-[40vh] overflow-y-scroll overflow-x-hidden scrollbar-none">
+                  <div className="flex flex-col gap-1 mt-2 h-[55vh] md:h-[40vh] overflow-x-hidden overflow-y-scroll scrollbar-none">
                     {/* admin */}
                     <div
                       className={`flex justify-between items-center p-2 rounded cursor-pointer  ${
@@ -300,7 +301,7 @@ const InfoDrawer = ({ open, closeDrawer }) => {
                           : "hover:bg-[#b7b7b7] bg-[#dedcdc]"
                       }`}
                     >
-                      <div className="flex gap-2 items-center">
+                      <div className="flex items-center gap-2">
                         <Avatar
                           src={selectChat.detail.groupAdmin.profilePicture}
                           className={`${
@@ -326,7 +327,7 @@ const InfoDrawer = ({ open, closeDrawer }) => {
                                 : "hover:bg-[#b7b7b7] bg-[#dedcdc]"
                             }`}
                           >
-                            <div className="flex gap-2 items-center">
+                            <div className="flex items-center gap-2">
                               <Avatar
                                 src={e.profilePicture}
                                 className={`${
@@ -345,7 +346,7 @@ const InfoDrawer = ({ open, closeDrawer }) => {
                     })}
                   </div>
                   <Button
-                    className="flex items-center gap-2 text-sm bg-red-800 m-auto mt-4"
+                    className="flex items-center gap-2 bg-red-800 m-auto mt-4 text-sm"
                     onClick={handleGroupDelete}
                   >
                     <Trash2 />
@@ -361,10 +362,10 @@ const InfoDrawer = ({ open, closeDrawer }) => {
                       theme ? "skeleton-dark" : "skeleton-light"
                     } m-auto block rounded-full w-20 md:w-48 h-20 md:h-48 object-cover`}
                   />
-                  <h1 className="text-3xl font-medium">
+                  <h1 className="font-medium text-3xl">
                     {selectChat.detail.chatName}
                   </h1>
-                  <div className="mt-2 flex flex-col gap-1 max-h-[55vh] md:max-h-[45vh] overflow-y-scroll overflow-x-hidden scrollbar-none">
+                  <div className="flex flex-col gap-1 mt-2 max-h-[55vh] md:max-h-[45vh] overflow-x-hidden overflow-y-scroll scrollbar-none">
                     {/* admin */}
                     <div
                       className={`flex justify-between items-center p-2 rounded cursor-pointer  ${
@@ -448,7 +449,7 @@ const InfoDrawer = ({ open, closeDrawer }) => {
                   theme ? "skeleton-dark" : "skeleton-light"
                 } m-auto block rounded-full w-48 md:w-50`}
               />
-              <h1 className="mt-4 text-3xl font-medium">
+              <h1 className="mt-4 font-medium text-3xl">
                 {selectChat.detail.name}
               </h1>
               <a href={`mailto:${selectChat.detail.email}`}>

@@ -7,7 +7,7 @@ import {
 } from "@material-tailwind/react";
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Phone,
@@ -22,7 +22,7 @@ import {
 } from "lucide-react";
 import logo from "../assets/logo.png";
 import { notSelectedChat } from "../Redux/SelectedChat/action";
-import { configure, formatTime, isUrl, url } from "./misc";
+import { configure, formatTime, isUrl, url } from "../misc";
 import axios from "axios";
 import io from "socket.io-client";
 import InfoDrawer from "./InfoDrawer";
@@ -218,10 +218,10 @@ const Messages = () => {
           {/* messagesArea */}
           <div
             ref={messagesContainerRef}
-            className="h-[83%] md:h-[80%] pt-5 overflow-scroll overflow-x-hidden scrollbar-none"
+            className="pt-5 h-[83%] md:h-[80%] overflow-scroll overflow-x-hidden scrollbar-none"
           >
             {loading ? (
-              <div className="h-full flex items-center">
+              <div className="flex items-center h-full">
                 <Loader2
                   size="70px"
                   className={`${theme ? "text-white" : ""} m-auto animate-spin`}
@@ -253,7 +253,11 @@ const Messages = () => {
                               >
                                 <div>
                                   {isUrl(msg.content) === "image" ? (
-                                    <img className="py-3" src={msg.content} alt={msg.content} />
+                                    <img
+                                      className="py-3"
+                                      src={msg.content}
+                                      alt={msg.content}
+                                    />
                                   ) : isUrl(msg.content) === "video" ? (
                                     <video className="py-3" controls>
                                       <source src={msg.content} />
@@ -295,9 +299,13 @@ const Messages = () => {
                                 {selectChat.data.isChatGroup && (
                                   <small>~ {sender.name}</small>
                                 )}
-                               <div>
+                                <div>
                                   {isUrl(msg.content) === "image" ? (
-                                    <img className="py-3" src={msg.content} alt={msg.content} />
+                                    <img
+                                      className="py-3"
+                                      src={msg.content}
+                                      alt={msg.content}
+                                    />
                                   ) : isUrl(msg.content) === "video" ? (
                                     <video className="py-3" controls>
                                       <source src={msg.content} />
@@ -341,7 +349,7 @@ const Messages = () => {
               theme ? "border-gray-800" : "border-gray-300"
             } `}
           >
-            <div className="flex items-center justify-center gap-2 w-full">
+            <div className="flex justify-center items-center gap-2 w-full">
               <div
                 className={`flex items-center px-2 md:px-5 py-2 gap-3 rounded-lg w-[80%] md:w-[90%] ${
                   theme ? "bg-[#252425] text-[#bebebe]" : "bg-gray-300"
@@ -399,7 +407,7 @@ const Messages = () => {
       ) : (
         <div className="flex justify-center items-center h-full">
           <section>
-            <img src={logo} alt="" className="w-48 block m-auto" />
+            <img src={logo} alt="" className="block m-auto w-48" />
             <h1
               className={`mt-5 font-semibold text-4xl ${
                 theme ? "text-white" : "text-black"

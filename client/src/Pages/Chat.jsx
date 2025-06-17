@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
 import Contacts from "../Components/Contacts";
 import Messages from "../Components/Messages";
-import { useSelector } from "react-redux";
 const Chat = () => {
   const theme = useSelector((state) => state.theme.isDarkMode);
   const selectChat = useSelector((state) => state.selectChat);

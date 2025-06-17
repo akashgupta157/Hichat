@@ -1,12 +1,9 @@
-import React from "react";
-import { useSelector } from "react-redux";
-const IndicatorAvatar = ({ src, w, h, isOnline }) => {
-  const theme = useSelector((state) => state.theme.isDarkMode);
+const IndicatorAvatar = ({ src, isOnline, theme }) => {
   return (
     <>
       <div className="relative">
         <img
-          className={`w-${w} h-${h} rounded-full ${
+          className={`rounded-full w-12 h-12 ${
             theme ? "skeleton-dark" : "skeleton-light"
           }`}
           src={src}

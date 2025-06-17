@@ -1,3 +1,14 @@
+import axios from "axios";
+import { url } from "../misc";
+import { useState } from "react";
+import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { useForm } from "react-hook-form";
+import { login } from "../Redux/Auth/action";
+import googleLogo from "../assets/google-logo.png";
+import { Link, useNavigate } from "react-router-dom";
+import { useGoogleLogin } from "@react-oauth/google";
+import { setPageLoad } from "../Redux/PageLoad/action";
 import { Button, IconButton } from "@material-tailwind/react";
 import {
   AtSign,
@@ -8,17 +19,6 @@ import {
   Eye,
   EyeOff,
 } from "lucide-react";
-import { useDispatch } from "react-redux";
-import { useForm } from "react-hook-form";
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import googleLogo from "../assets/google-logo.png";
-import axios from "axios";
-import { url } from "../Components/misc";
-import { toast } from "react-toastify";
-import { useGoogleLogin } from "@react-oauth/google";
-import { login } from "../Redux/Auth/action";
-import { setPageLoad } from "../Redux/PageLoad/action";
 const Register = () => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
@@ -85,24 +85,24 @@ const Register = () => {
   }
   return (
     <>
-      <div className="text-[#0d0c22] m-auto w-full px-5 mt-10 sm:w-[400px] sm:shadow-xl sm:py-5 sm:rounded sm:mt-5">
+      <div className="sm:shadow-xl m-auto mt-10 sm:mt-5 px-5 sm:py-5 sm:rounded w-full sm:w-[400px] text-[#0d0c22]">
         <h1 className="text-2xl	font-bold	mb-[30px]">Sign up to Hichat</h1>
         <Button
           variant="outlined"
-          className="flex justify-center items-center gap-4 rounded-full w-full border-gray-400 py-[16px]"
+          className="flex justify-center items-center gap-4 py-[16px] border-gray-400 rounded-full w-full"
           onClick={() => handleGoogle()}
         >
           <img src={googleLogo} alt="" className="w-[16px]" />
-          <p className="text-sm font-semibold capitalize">
+          <p className="font-semibold text-sm capitalize">
             Sign up with Google
           </p>
         </Button>
-        <div className="flex justify-center items-center w-full my-5">
-          <hr className="w-full h-[3px] bg-gray-400 border dark:bg-gray-700" />
-          <p className="w-[500px] text-center text-gray-500 text-sm">
+        <div className="flex justify-center items-center my-5 w-full">
+          <hr className="bg-gray-400 dark:bg-gray-700 border w-full h-[3px]" />
+          <p className="w-[500px] text-gray-500 text-sm text-center">
             or sign up with email
           </p>
-          <hr className="w-full h-[3px] bg-gray-400 border dark:bg-gray-700" />
+          <hr className="bg-gray-400 dark:bg-gray-700 border w-full h-[3px]" />
         </div>
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
           <div className="flex flex-col gap-2 mb-3">
@@ -110,7 +110,7 @@ const Register = () => {
               <label className="font-semibold" htmlFor="email">
                 Name:
               </label>
-              <div className="flex items-center gap-1 border rounded-md px-2 py-3 pl-5 transition duration-300 ease-in-out focus-within:border-black focus-within:border-2 focus-within:text-[#0d0c22] border-gray-400 text-gray-600">
+              <div className="flex items-center gap-1 px-2 py-3 pl-5 border border-gray-400 focus-within:border-2 focus-within:border-black rounded-md text-gray-600 focus-within:text-[#0d0c22] transition duration-300 ease-in-out">
                 <input
                   autoCapitalize="off"
                   autoCorrect="off"
@@ -133,7 +133,7 @@ const Register = () => {
               </div>
             </fieldset>
             {errors.name && (
-              <p className="flex gap-2 items-center text-red-700 font-medium">
+              <p className="flex items-center gap-2 font-medium text-red-700">
                 <AlertCircle />
                 {errors.name.message}
               </p>
@@ -144,7 +144,7 @@ const Register = () => {
               <label className="font-semibold" htmlFor="email">
                 Email:
               </label>
-              <div className="flex items-center gap-1 border rounded-md px-2 py-3 pl-5 transition duration-300 ease-in-out focus-within:border-black focus-within:border-2 focus-within:text-[#0d0c22] border-gray-400 text-gray-600">
+              <div className="flex items-center gap-1 px-2 py-3 pl-5 border border-gray-400 focus-within:border-2 focus-within:border-black rounded-md text-gray-600 focus-within:text-[#0d0c22] transition duration-300 ease-in-out">
                 <input
                   autoCapitalize="off"
                   autoCorrect="off"
@@ -163,7 +163,7 @@ const Register = () => {
               </div>
             </fieldset>
             {errors.email && (
-              <p className="flex gap-2 items-center text-red-700 font-medium">
+              <p className="flex items-center gap-2 font-medium text-red-700">
                 <AlertCircle />
                 {errors.email.message}
               </p>
@@ -172,7 +172,7 @@ const Register = () => {
           <div className="flex flex-col gap-1 mb-5">
             <fieldset className="flex flex-col">
               <label
-                className="font-semibold flex justify-between items-center"
+                className="flex justify-between items-center font-semibold"
                 htmlFor="password"
               >
                 <p>Password:</p>
@@ -180,7 +180,7 @@ const Register = () => {
                   {showPassword ? <Eye /> : <EyeOff />}
                 </IconButton>
               </label>
-              <div className="flex items-center gap-1 border rounded-md px-2 py-3 pl-5 transition duration-300 ease-in-out focus-within:border-black focus-within:border-2 focus-within:text-[#0d0c22] border-gray-400 text-gray-600">
+              <div className="flex items-center gap-1 px-2 py-3 pl-5 border border-gray-400 focus-within:border-2 focus-within:border-black rounded-md text-gray-600 focus-within:text-[#0d0c22] transition duration-300 ease-in-out">
                 <input
                   autoCapitalize="off"
                   autoCorrect="off"
@@ -203,26 +203,26 @@ const Register = () => {
               </div>
             </fieldset>
             {errors.password && (
-              <p className="flex gap-2 items-center text-red-700 font-medium">
+              <p className="flex items-center gap-2 font-medium text-red-700">
                 <AlertCircle />
                 {errors.password.message}
               </p>
             )}
           </div>
           {loading ? (
-            <Button className="w-full rounded-full py-[16px] text-sm capitalize ">
+            <Button className="py-[16px] rounded-full w-full text-sm capitalize">
               <Loader2 className="m-auto animate-spin" />
             </Button>
           ) : (
             <Button
-              className="w-full rounded-full py-[16px] text-sm capitalize"
+              className="py-[16px] rounded-full w-full text-sm capitalize"
               type="submit"
             >
               Sign in
             </Button>
           )}
         </form>
-        <p className="w-full text-right mt-4 text-sm text-gray-600">
+        <p className="mt-4 w-full text-gray-600 text-sm text-right">
           Already have an account?{" "}
           <Link className="underline" to={"/"}>
             Sign in

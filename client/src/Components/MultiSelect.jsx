@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import { configure, url } from "./misc";
-import { useSelector } from "react-redux";
 import { X } from "lucide-react";
+import { configure, url } from "../misc";
+import { useSelector } from "react-redux";
 import { Avatar } from "@material-tailwind/react";
+import { useState, useEffect, useRef } from "react";
 const MultiSelect = ({ onMembersSelect }) => {
   const theme = useSelector((state) => state.theme.isDarkMode);
   const you = useSelector((state) => state.auth.user);
@@ -58,7 +58,7 @@ const MultiSelect = ({ onMembersSelect }) => {
         }`}
         onClick={() => inputRef.current.focus()}
       >
-        <div className="flex gap-2 items-center">
+        <div className="flex items-center gap-2">
           {selectedMembers.map((member) => (
             <div
               key={member._id}
@@ -84,7 +84,7 @@ const MultiSelect = ({ onMembersSelect }) => {
           }`}
         />
       </div>
-      <div className="relative flex justify-center z-10">
+      <div className="z-10 relative flex justify-center">
         {groupSearchResults.length > 0 && (
           <div
             className={`absolute border w-[100%] md:w-[80%] mt-2 rounded-md py-1 md:py-3 md:px-5 flex flex-col gap-3 ${
