@@ -19,6 +19,7 @@ import {
   ArrowLeft,
   Loader2,
   File,
+  ExternalLink,
 } from "lucide-react";
 import logo from "../assets/logo.png";
 import { notSelectedChat } from "../Redux/SelectedChat/action";
@@ -46,10 +47,33 @@ const Messages = () => {
   };
   // TODO scroll to down ⮧
   useEffect(() => {
-    if (messagesContainerRef.current) {
-      messagesContainerRef.current.scrollTop =
-        messagesContainerRef.current.scrollHeight;
-    }
+    const scrollToBottom = () => {
+      if (messagesContainerRef.current) {
+        messagesContainerRef.current.scrollTop =
+          messagesContainerRef.current.scrollHeight;
+      }
+    };
+    scrollToBottom();
+    const mediaElements =
+      messagesContainerRef.current?.querySelectorAll("img, video") || [];
+    mediaElements.forEach((element) => {
+      if (element.tagName === "IMG") {
+        element.onload = scrollToBottom;
+      } else if (element.tagName === "VIDEO") {
+        element.onloadedmetadata = scrollToBottom;
+      }
+    });
+    const timeoutId = setTimeout(scrollToBottom, 0);
+    return () => {
+      mediaElements.forEach((element) => {
+        if (element.tagName === "IMG") {
+          element.onload = null;
+        } else if (element.tagName === "VIDEO") {
+          element.onloadedmetadata = null;
+        }
+      });
+      clearTimeout(timeoutId);
+    };
   }, [allMessages, selectChat]);
   // TODO scroll to down ⮥
   // TODO socket.io ⮧
@@ -253,15 +277,51 @@ const Messages = () => {
                               >
                                 <div>
                                   {isUrl(msg.content) === "image" ? (
-                                    <img
-                                      className="py-3"
-                                      src={msg.content}
-                                      alt={msg.content}
-                                    />
+                                    <div className="group relative">
+                                      <img
+                                        className="rounded-lg w-full h-auto max-h-80 object-cover"
+                                        src={msg.content}
+                                        alt="Sent image"
+                                        onLoad={() => {
+                                          const container =
+                                            messagesContainerRef.current;
+                                          if (container) {
+                                            setTimeout(() => {
+                                              container.scrollTop =
+                                                container.scrollHeight;
+                                            }, 100);
+                                          }
+                                        }}
+                                      />
+                                      <a
+                                        href={msg.content}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="right-2 bottom-2 absolute bg-black/50 opacity-0 group-hover:opacity-100 p-2 rounded-full transition-opacity"
+                                      >
+                                        <ExternalLink
+                                          size={16}
+                                          className="text-white"
+                                        />
+                                      </a>
+                                    </div>
                                   ) : isUrl(msg.content) === "video" ? (
-                                    <video className="py-3" controls>
-                                      <source src={msg.content} />
-                                    </video>
+                                    <div className="group relative">
+                                      <video className="py-3" controls>
+                                        <source src={msg.content} />
+                                      </video>
+                                      <a
+                                        href={msg.content}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="right-2 bottom-2 absolute bg-black/50 opacity-0 group-hover:opacity-100 p-2 rounded-full transition-opacity"
+                                      >
+                                        <ExternalLink
+                                          size={16}
+                                          className="text-white"
+                                        />
+                                      </a>
+                                    </div>
                                   ) : isUrl(msg.content) === "audio" ? (
                                     <audio className="py-1" controls>
                                       <source src={msg.content} />
@@ -271,7 +331,7 @@ const Messages = () => {
                                       href={msg.content}
                                       target="_blank"
                                       rel="noopener noreferrer"
-                                      className="flex gap-1 pt-2 underline"
+                                      className="flex gap-1 pt-2"
                                     >
                                       <File />
                                       {msg.content.split("file-")[1]}
@@ -301,15 +361,51 @@ const Messages = () => {
                                 )}
                                 <div>
                                   {isUrl(msg.content) === "image" ? (
-                                    <img
-                                      className="py-3"
-                                      src={msg.content}
-                                      alt={msg.content}
-                                    />
+                                    <div className="group relative">
+                                      <img
+                                        className="rounded-lg w-full h-auto max-h-80 object-cover"
+                                        src={msg.content}
+                                        alt="Sent image"
+                                        onLoad={() => {
+                                          const container =
+                                            messagesContainerRef.current;
+                                          if (container) {
+                                            setTimeout(() => {
+                                              container.scrollTop =
+                                                container.scrollHeight;
+                                            }, 100);
+                                          }
+                                        }}
+                                      />
+                                      <a
+                                        href={msg.content}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="right-2 bottom-2 absolute bg-black/50 opacity-0 group-hover:opacity-100 p-2 rounded-full transition-opacity"
+                                      >
+                                        <ExternalLink
+                                          size={16}
+                                          className="text-white"
+                                        />
+                                      </a>
+                                    </div>
                                   ) : isUrl(msg.content) === "video" ? (
-                                    <video className="py-3" controls>
-                                      <source src={msg.content} />
-                                    </video>
+                                    <div className="group relative">
+                                      <video className="py-3" controls>
+                                        <source src={msg.content} />
+                                      </video>
+                                      <a
+                                        href={msg.content}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="right-2 bottom-2 absolute bg-black/50 opacity-0 group-hover:opacity-100 p-2 rounded-full transition-opacity"
+                                      >
+                                        <ExternalLink
+                                          size={16}
+                                          className="text-white"
+                                        />
+                                      </a>
+                                    </div>
                                   ) : isUrl(msg.content) === "audio" ? (
                                     <audio className="py-1" controls>
                                       <source src={msg.content} />
@@ -319,7 +415,7 @@ const Messages = () => {
                                       href={msg.content}
                                       target="_blank"
                                       rel="noopener noreferrer"
-                                      className="flex gap-1 pt-2 underline"
+                                      className="flex gap-1 pt-2"
                                     >
                                       <File />
                                       {msg.content.split("file-")[1]}

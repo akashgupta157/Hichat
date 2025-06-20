@@ -39,22 +39,81 @@ export function formatDateTime(timestamp) {
   }
 }
 export function isUrl(str) {
-  const urlRegex = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;
-  if (urlRegex.test(str)) {
-    const imageRegex = /\.(jpg|jpeg|png|gif)$/i;
-    const videoRegex = /\.(mp4|ogg|webm)$/i;
-    const audioRegex = /\.(mp3|wav)$/i;
-    const documentRegex = /\.(pdf|doc|docx|xls|xlsx)$/i;
-    if (imageRegex.test(str)) {
-      return "image";
-    } else if (videoRegex.test(str)) {
-      return "video";
-    } else if (audioRegex.test(str)) {
-      return "audio";
-    } else if (documentRegex.test(str)) {
-      return "document";
+  const urlLike = /^(https?|ftp):\/\//i.test(str);
+
+  if (urlLike) {
+    let urlObj;
+    try {
+      const tempStr = str.replace(/ /g, "%20");
+      urlObj = new URL(tempStr);
+    } catch (e) {
+      const lastDotIndex = str.lastIndexOf(".");
+      if (lastDotIndex === -1) return "link";
+
+      const extension = str
+        .slice(lastDotIndex + 1)
+        .split(/[ ?]/)[0]
+        .toLowerCase();
+
+      const imageExtensions = [
+        "jpg",
+        "jpeg",
+        "png",
+        "gif",
+        "webp",
+        "bmp",
+        "svg",
+      ];
+      const videoExtensions = [
+        "mp4",
+        "mov",
+        "avi",
+        "mkv",
+        "webm",
+        "ogg",
+        "wmv",
+        "flv",
+      ];
+      const audioExtensions = ["mp3", "wav", "ogg", "m4a", "flac", "aac"];
+      const documentExtensions = [
+        "pdf",
+        "doc",
+        "docx",
+        "xls",
+        "xlsx",
+        "ppt",
+        "pptx",
+        "txt",
+        "rtf",
+        "csv",
+      ];
+
+      if (imageExtensions.includes(extension)) return "image";
+      if (videoExtensions.includes(extension)) return "video";
+      if (audioExtensions.includes(extension)) return "audio";
+      if (documentExtensions.includes(extension)) return "document";
+
+      return "link";
     }
-  }else{
-    return str
+    const pathname = urlObj.pathname.toLowerCase();
+    const lastDotIndex = pathname.lastIndexOf(".");
+
+    if (lastDotIndex === -1) return "link";
+
+    const extension = pathname.slice(lastDotIndex + 1).split(/[ ?]/)[0];
+
+    const imageRegex = /(jpg|jpeg|png|gif|webp|bmp|svg)$/i;
+    const videoRegex = /(mp4|mov|avi|mkv|webm|ogg|wmv|flv)$/i;
+    const audioRegex = /(mp3|wav|ogg|m4a|flac|aac)$/i;
+    const documentRegex = /(pdf|doc|docx|xls|xlsx|ppt|pptx|txt|rtf|csv)$/i;
+
+    if (imageRegex.test(extension)) return "image";
+    if (videoRegex.test(extension)) return "video";
+    if (audioRegex.test(extension)) return "audio";
+    if (documentRegex.test(extension)) return "document";
+
+    return "link";
   }
+
+  return str;
 }
