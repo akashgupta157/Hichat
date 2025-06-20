@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import Contacts from "../Components/Contacts";
 import Message from "../Components/ChatWindow/Message";
+import Contact from "../Components/ChatSidebar/Contact";
 const Chat = () => {
   const theme = useSelector((state) => state.theme.isDarkMode);
   const selectChat = useSelector((state) => state.selectChat);
@@ -23,7 +23,7 @@ const Chat = () => {
             theme ? "bg-[#010001]" : "bg-[#f6f6f7]"
           }`}
         >
-          <Contacts />
+          <Contact />
           <Message />
         </div>
       ) : (
@@ -32,7 +32,7 @@ const Chat = () => {
             theme ? "bg-[#010001]" : "bg-[#f6f6f7]"
           }`}
         >
-          {selectChat.isChatSelected ? <Message /> : <Contacts />}
+          {selectChat.isChatSelected ? <Message /> : <Contact />}
         </div>
       )}
     </>

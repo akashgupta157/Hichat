@@ -16,6 +16,7 @@ import {
 const InfoDrawer = ({ open, closeDrawer }) => {
   const theme = useSelector((state) => state.theme.isDarkMode);
   const selectChat = useSelector((state) => state.selectChat.data);
+  console.log("selectChat", selectChat);
   const you = useSelector((state) => state.auth.user);
   const [image, setImage] = useState(selectChat.detail.groupPicture);
   const [imgHover, setImgHover] = useState(false);
